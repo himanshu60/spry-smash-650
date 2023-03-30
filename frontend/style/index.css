@@ -1,0 +1,137 @@
+#nav {
+    /* border: 1px solid black; */
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-around;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.left {
+    /* border: 1px solid red; */
+    width: 50%;
+}
+
+#nav .left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 25px;
+
+}
+
+#nav .left p {
+    cursor: pointer;
+}
+
+img {
+    height: 100%;
+}
+
+#first {
+
+    /* border: 1px solid black; */
+    width: 80%;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+}
+
+#left {
+    width: 30%;
+}
+
+#right {
+    width: 65%;
+}
+
+/* #right img {
+    border: 2px solid black
+} */
+
+#left h1 {
+    font-size: 60px;
+}
+
+#left h2 {
+    font-size: 35px;
+}
+
+#left p {
+    font-size: 25px;
+}
+
+#left button {
+    width: 200px;
+    cursor: pointer;
+    outline: 0;
+    display: inline-block;
+    font-weight: 800;
+    line-height: 1.5;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 1.20rem;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    color: #6c3bee;
+    border-color: #6c3bee;
+
+
+}
+
+#left button:hover {
+    color: #fff;
+    background-color: #6c3bee;
+    border-color: #6c3bee;
+}
+
+footer {
+    /* border: 1px solid black; */
+    width: 100%;
+    margin-top: 50px;
+    background-color: #e4e0ee;
+    height: 500px;
+    padding: 5%;
+    display: flex;
+    justify-content: space-around;
+}
+
+footer h1 {
+    font-size: 50px;
+}
+
+footer img {
+    border-radius: 25%;
+    width: 60%;
+    height: 80%;
+}
+
+footer .left {
+    /* border: 1px solid black; */
+    width: 40%;
+}
+
+footer .left h1 {
+    margin-left: 17%;
+}
+
+footer .right {
+    /* border: 1px solid black; */
+    width: 50%;
+}
+
+footer .right ul {
+    list-style: none;
+}
+
+footer .right ul li {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
