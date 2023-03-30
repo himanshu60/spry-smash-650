@@ -3,11 +3,12 @@ const { passport } = require("../config/google-oauth");
 //const {connection}=require("./config/db")
 const express = require("express");
 const app = express();
-
+const path=require("path")
 const googlerouter = express.Router();
 
 googlerouter.get("/login", (req, res) => {
-  res.sendFile("C:/Users/ABCD/Desktop/SPRY-SMASH-650/frontend/message.html");
+  let X=path.join(__dirname+"/frontend/message.html")
+  res.sendFile(X);
   //console.log()
 });
 
