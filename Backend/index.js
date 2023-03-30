@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-
+const cors=require("cors")
 const { connection } = require("./config/db");
 const { userRouter } = require("./routes/user.route");
 const { githubRouter } = require("./loginRoute/github.route");
@@ -11,12 +11,12 @@ const cookieParser = require("cookie-parser");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(cors())
 app.get("/weather", authmiddleware, (req, res) => {
   res.send("Welcome to weather app");
 });
 
-app.use("/", userRouter);
+app.use("/user", userRouter);
 app.use("/github", githubRouter);
 app.use("/google",googlerouter);
 app.use("/facebook",fbrouter);
