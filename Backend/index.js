@@ -15,7 +15,7 @@ app.use(cors())
 app.get("/weather", authmiddleware, (req, res) => {
   res.send("Welcome to weather app");
 });
-
+// Routers api
 app.use("/user", userRouter);
 app.use("/github", githubRouter);
 app.use("/google",googlerouter);
