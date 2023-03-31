@@ -19,7 +19,7 @@ userRouter.post("/signup", async (req, res, next) => {
     }
     bcrypt.hash(password, 8, async (err, hash_pass) => {
       if (err) {
-        res.send({ msg: "user already rejistered" });
+        res.send({ msg: "user already registered" });
       } else {
           let Y=name.trim().split(" ")
           let logo
