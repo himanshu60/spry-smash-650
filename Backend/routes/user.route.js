@@ -4,10 +4,11 @@ const { redisclient } = require("../config/redis");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models/user.schema");
-const {authmiddleware}=require("../middleware/authenticate")
-const path=require("path")
+const { authmiddleware } = require("../middleware/authenticate");
+const path = require("path");
 const userRouter = express.Router();
 
+ 
 userRouter.post("/signup", async (req, res, next) => {
   let { name, email, password } = req.body;
   // console.log(name,email,password)
@@ -21,14 +22,14 @@ userRouter.post("/signup", async (req, res, next) => {
       if (err) {
         res.send({ msg: "user already registered" });
       } else {
-          let Y=name.trim().split(" ")
-          let logo
-          if(Y.length>1){
-
-            logo =Y[0][0]+Y[Y.length-1][0]
-          }else{logo=Y[0][0]}
+        let Y = name.trim().split(" ");
+        let logo;
+        if (Y.length > 1) {
+          logo = Y[0][0] + Y[Y.length - 1][0];
+        } else {
+          logo = Y[0][0];
+        }
         let user = new UserModel({
-
           name,
           logo,
           email,
@@ -44,8 +45,6 @@ userRouter.post("/signup", async (req, res, next) => {
   }
 });
 
-
- 
 userRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
   try {
