@@ -72,6 +72,32 @@ userRouter.post("/login", async (req, res, next) => {
   }
 });
 
+//get data
+userRouter.get("/get", async (req, res, next) => { 
+    // const payload = req.body;
+    try {
+        const user=await UserModel.find()
+        res.send(user)
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+//delete data
+userRouter.delete("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const deleteduser=await UserModel.findByIdAndDelete(id);
+      res.send(deleteduser);
+      console.log(deleteduser);
+      
+  } catch (err) {
+    res.send({ status: err.message });
+  }
+});
+
+
+
 // logout
 userRouter.post("/logout", async (req, res) => {
   try {
