@@ -29,7 +29,7 @@ body{
 #menu .logo img{
 width: 60px;
 margin-right: 13px;
-border-radius: 9px;
+border-radius: 25%;
 }
 #menu .items{
 margin-top: 40px;
