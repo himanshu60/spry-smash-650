@@ -87,7 +87,7 @@ userRouter.get("/get", async (req, res, next) => {
 userRouter.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const deleteduser=await UserModel.findByIdAndDelete(id);
+      const deleteduser = await UserModel.findByIdAndRemove({"_id":id});
       res.send(deleteduser);
       console.log(deleteduser);
       

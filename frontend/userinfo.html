@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" 
   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
+     <script src="https://code.jquery.com/jquery-3.6.3.min.js" ></script>
+    <link rel="stylesheet" href="./style/adminPage.css">
+    <script src="https://kit.fontawesome.com/e962f2728f.js" crossorigin="anonymous"></script>
+    <title>DASHBOARD</title>
     <style>
+       #menu .items li:nth-child(1){
+        border-left: 4px solid white;
+       }
+    
+    
     body{
         background: #1d2630;
     }
@@ -24,8 +32,39 @@
 </style>
 </head>
 <body>
-    <div class="container">
-    <u><h1>User Details</h1></u>
+    <!-- side nav bar -->
+    
+    <section id="menu">
+        <div class="logo">
+             <img src="./image/Hangout copy.jpg" alt="">
+            <h4>Hangout</h4>
+        </div>
+        <div class="items">
+            <li><i class="fa-solid fa-chart-simple"></i> <a href="./admin.html">DASHBOARD</a></li> 
+           <li><i class="fa-solid fa-circle-info"></i> <a href="./userinfo.html">USER INFO</a></li>
+           <li><i class="fa-solid fa-people-group"></i> <a href="./totalCustomer.html">TOTAL CUSTOMER</a></li>
+         </div>
+    </section>
+    
+    <!-- top search section -->
+    <section id="interface">
+        <div class="navigation">
+            <div class="n1">
+                <div>
+                    <i id="menu-btn" class="fa-solid fa-bars"></i>
+                </div>
+                <div>
+                    <h1>User Details</h1>
+                </div>
+            </div>
+            <!-- profile section -->
+            <div class="profile">
+                <i class="fa-solid fa-bell"></i>
+                <img id="pro" src="./image/person-logo.png" alt="">
+            </div>
+        </div>
+    <div style="margin-top: 90px;">
+    
                 
             <div class="row mt-5">
                 <div class="col-12">
@@ -48,7 +87,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+      </div>
 </body>
 </html>
 
@@ -77,12 +116,13 @@
 
             td.innerHTML=element.name;
             td1.innerHTML=element.email;
-            // td3.innerHTML="Delete";
-
-            // tr.append(td,td1,td3);
             tr.append(td,td1);
             tbody.append(tr);
         })
     }
     
+    // toggle
+        $(`#menu-btn`).click(function(){
+            $(`#menu`).toggleClass("active")
+        })
 </script>

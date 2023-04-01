@@ -6,15 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" 
   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" ></script>
+    <link rel="stylesheet" href="./style/adminPage.css">
+    <script src="https://kit.fontawesome.com/e962f2728f.js" crossorigin="anonymous"></script>
+    <title>DASHBOARD</title>
     <style>
+       #menu .items li:nth-child(1){
+        border-left: 4px solid white;
+       }
+    
+    
     body{
         background: #1d2630;
     }
     *{
         color:#fff;
     }
-    h1{
+   h1{
         color: crimson;
         text-align: center;
     }
@@ -24,9 +32,40 @@
 </style>
 </head>
 <body>
-    <div class="container">
-    <u><h1>Total Customer</h1></u>
-                
+    
+<!-- side nav bar -->
+    
+    <section id="menu">
+        <div class="logo">
+             <img src="./image/Hangout copy.jpg" alt="">
+            <h4>Hangout</h4>
+        </div>
+        <div class="items">
+            <li><i class="fa-solid fa-chart-simple"></i> <a href="./admin.html">DASHBOARD</a></li> 
+           <li><i class="fa-solid fa-circle-info"></i> <a href="./userinfo.html">USER INFO</a></li>
+           <li><i class="fa-solid fa-people-group"></i> <a href="./totalCustomer.html">TOTAL CUSTOMER</a></li>
+         </div>
+    </section>
+    
+    <!-- top search section -->
+    <section id="interface">
+        <div class="navigation">
+            <div class="n1">
+                <div>
+                    <i id="menu-btn" class="fa-solid fa-bars"></i>
+                </div>
+                <div>
+                    <h1>Manage User</h1>
+                </div>
+            </div>
+            <!-- profile section -->
+            <div class="profile">
+                <i class="fa-solid fa-bell"></i>
+                <img id="pro" src="./image/person-logo.png" alt="">
+            </div>
+        </div>
+    <div>    
+    <div style="margin-top: 90px;">
             <div class="row mt-5">
                 <div class="col-12">
                     <table class="table table-bordered" id="crudTable">
@@ -49,19 +88,49 @@
                 </div>
             </div>
         </div>
+        </div>
 </body>
 </html>
 
 <script>
+        
+// toggle
+        $(`#menu-btn`).click(function(){
+            $(`#menu`).toggleClass("active")
+        })
 
     let tbody=document.getElementById("append");
 
     async function update(){
-
+           
             let res= await fetch("http://localhost:8080/user/get")
             let data=await res.json();
             display(data);
             console.log(data);
+            let alldeletebtn=document.querySelectorAll(".delete");
+            console.log(alldeletebtn);
+            alldeletebtn.forEach((item)=>
+            {
+                
+                item.addEventListener("click",async ()=>
+                {
+                    console.log(item.classList[0]);
+                    let res=await fetch(`http://localhost:8080/user/delete/${item.classList[0]}`,{
+                        method:"DELETE",
+                    
+                    })
+                    if(res.ok)
+                    {
+                        let r=res.json();
+                       
+                        alert("delete successfully");
+                        window.location.reload();
+                        
+
+                    }
+                })
+            })
+
     }
 
     update();
@@ -74,7 +143,7 @@
             let td=document.createElement("td");
             let td1=document.createElement("td");
             let td3=document.createElement("td");
-
+            td3.classList.add(element._id,"delete")
             td.innerHTML=element.name;
             td1.innerHTML=element.email;
             td3.innerHTML="Delete";
@@ -83,71 +152,7 @@
             tbody.append(tr);
         })
     }
-    
 
 
-
-
-
-
-
-
-
-
-
-    // let tbody=document.getElementById("append");
-    // let button=document.getElementById("submit");
-
-    // async function update(){
-
-    //         let res= await fetch("http://localhost:8080/user/get")
-    //         let data=await res.json();
-    //         display(data);
-    //         console.log(data);
-    // }
-
-    // update();
-    
-    
-    // function display(data) {
-
-    //     data.forEach(element=>{
-
-    //         let tr= document.createElement("tr");
-    //         let td=document.createElement("td");
-    //         let td1=document.createElement("td");
-    //         let td3=document.createElement("button");
-
-    //         td.innerHTML=element.name;
-    //         td1.innerHTML=element.email;
-    //         td3.innerHTML="Delete";
-    //         td3.addEventListener("click",()=>{
-    //                  async function dlt (data){
-    //         console.log(data)
-    //         try{
-    //             let res=await fetch("http://localhost:8080/user/delete/:id",{
-    //                 method:"DELETE",
-    //                 body:JSON.stringify(data),
-    //                 headers:{"Content-type":"application/json"}
-
-    //             }).then(res=>res.json())
-    //     .then(res=>{
-    //         console.log(res)
-    //         localStorage.setItem("token",res.token)
-    //     })
-                
-    //         }catch(err){
-    //             console.log(err)
-    //         }
-    //     }
-    //      dlt();
-    //      console.log('buttons clicked');
-         
-    //         })
-
-    //         tr.append(td,td1,td3);
-    //         tbody.append(tr);
-    //     })
-    // }
     
 </script>
