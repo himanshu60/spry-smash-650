@@ -22,38 +22,40 @@
     #admin:hover {
       background-color: #ffffff;
     }
-    #container{
-    width: 100%;
-    height: 800px;
-}
 
-/* other */
-#boxbody{
-background-color: white;
-width :400px;
-margin: auto;
-}
-h2{
-font-size: 2.3rem;
-}
-h2 span,p{
-color: gray;
-}
+    #container {
+      width: 100%;
+      height: 800px;
+    }
 
-.signin{
-padding: 30px;
-}
+    /* other */
+    #boxbody {
+      background-color: white;
+      width: 400px;
+      margin: auto;
+    }
 
-input{
-padding: 10px 145px 10px 20px;
-margin-top:20px ;
-}
+    h2 {
+      font-size: 2.3rem;
+    }
 
-/* h3{
+    h2 span,
+    p {
+      color: gray;
+    }
+
+    .signin {
+      padding: 30px;
+    }
+
+    input {
+      padding: 10px 145px 10px 20px;
+      margin-top: 20px;
+    }
+
+    /* h3{
 margin-bottom: -2px;
 } */
-
-
   </style>
 </head>
 
@@ -62,44 +64,44 @@ margin-bottom: -2px;
     <div class="signin">
 
       <h2> Admin <span>Login</h2>
-        <form action="">
-      <div>
-        <input type="email" placeholder="Enter your email" id="email">
-        <input type="password" placeholder="Enter password" id="password">
-      </div>
+      <form action="">
+        <div>
+          <input type="email" placeholder="Enter your email" id="email">
+          <input type="password" placeholder="Enter password" id="password">
+        </div>
 
-      <input type="submit" value="Login" id="admin">
-      
+        <input type="submit" value="Login" id="admin">
+
     </div>
-</form>
+    </form>
   </div>
 </body>
 
 </html>
 
 <script>
-    let data=[{email:"himanshu@gmail.com",pass:"admin4321", profile:"./logo/person-logo.png"},
-    {email:"rahul@gmail.com",pass:"admin4321", profile:"./logo/person-logo.png"},
-{email:"saloni@gmail.com",pass:"admin4321", profile:"image/person-logo.png"},
-{email:"yuvraj@gmail.com",pass:"admin4321", profile:"./logo/IMG_20211101_152537.jpg"},]
-let emailValue= document.getElementById("email")
-let passwordValue=document.getElementById("password")
-let form =document.querySelector("form")
-// userinfo
+  let data = [{ email: "himanshu@gmail.com", pass: "admin4321", profile: "./logo/person-logo.png" },
+  { email: "rahul@gmail.com", pass: "admin4321", profile: "./logo/person-logo.png" },
+  { email: "saloni@gmail.com", pass: "admin4321", profile: "image/person-logo.png" },
+  { email: "yuvraj@gmail.com", pass: "admin4321", profile: "./logo/IMG_20211101_152537.jpg" },]
+  let emailValue = document.getElementById("email")
+  let passwordValue = document.getElementById("password")
+  let form = document.querySelector("form")
+  // userinfo
 
 
-form.addEventListener("submit",(e)=>{
-e.preventDefault()
-localStorage.setItem("email", JSON.stringify(data))
-let passI= form.password.value
-let emailI= form.email.value
-if(passI!="" && emailI!=""){
-    data.forEach((ele)=>{
-    if(ele.email==emailI && ele.pass==passI){
-       localStorage.setItem("e", emailI)
-       self.location="admin.html"
+  form.addEventListener("submit", (e) => {
+    e.preventDefault()
+    localStorage.setItem("email", JSON.stringify(data))
+    let passI = form.password.value
+    let emailI = form.email.value
+    if (passI != "" && emailI != "") {
+      data.forEach((ele) => {
+        if (ele.email == emailI && ele.pass == passI) {
+          localStorage.setItem("e", emailI)
+          self.location = "admin.html"
+        }
+      })
     }
-})
-}
-})
+  })
 </script>
