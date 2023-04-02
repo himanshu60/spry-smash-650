@@ -1,6 +1,7 @@
 var GitHubStrategy = require("passport-github2").Strategy;
 const passport3 = require("passport");
 require("dotenv").config();
+const {redisclient}=require("./redis")
 const { UserModel } = require("../models/user.schema");
 const { v4: uuidv4 } = require("uuid");
 
@@ -13,8 +14,12 @@ passport3.use(
       scope: "user:email",
     },
     async function (accessToken, refreshToken, profile, done) {
+      
       let email = profile.emails[0].value;
+      await redisclient.SET(email, JSON.stringify({ "token": accessToken }));
+      await redisclient.SET("email",`${email}`);
       let udata = await UserModel.findOne({ email });
+      // console.log(accessToken)
       if (udata) {
         return done(null, udata);
       }

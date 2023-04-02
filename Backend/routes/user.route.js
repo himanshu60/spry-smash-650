@@ -8,7 +8,7 @@ const { authmiddleware } = require("../middleware/authenticate");
 const path = require("path");
 const userRouter = express.Router();
 
- 
+
 userRouter.post("/signup", async (req, res, next) => {
   let { name, email, password } = req.body;
   // console.log(name,email,password)
@@ -57,11 +57,10 @@ userRouter.post("/login", async (req, res, next) => {
         const token = jwt.sign({ user_id: user._id }, process.env.key, {
           expiresIn: "1d",
         });
-        let obj = {
-          token,
-        };
-        await redisclient.SET(user.email, JSON.stringify(obj));
+
+        await redisclient.SET(user.email, JSON.stringify({ token }));
         res.cookie("email", `${user.email}`);
+        // await redisclient.SET("tokens", JSON.stringify({token}));
         res.json({ msg: "LogIn Sucessfully", token });
       } else {
         res.status(404).json({ err: "Wrong credentials" });
@@ -73,24 +72,24 @@ userRouter.post("/login", async (req, res, next) => {
 });
 
 //get data
-userRouter.get("/get", async (req, res, next) => { 
-    // const payload = req.body;
-    try {
-        const user=await UserModel.find()
-        res.send(user)
-    } catch (error) {
-        console.log(error);
-    }
+userRouter.get("/get", async (req, res, next) => {
+  // const payload = req.body;
+  try {
+    const user = await UserModel.find()
+    res.send(user)
+  } catch (error) {
+    console.log(error);
+  }
 })
 
 //delete data
 userRouter.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
   try {
-      const deleteduser = await UserModel.findByIdAndRemove({"_id":id});
-      res.send(deleteduser);
-      console.log(deleteduser);
-      
+    const deleteduser = await UserModel.findByIdAndRemove({ "_id": id });
+    res.send(deleteduser);
+    console.log(deleteduser);
+
   } catch (err) {
     res.send({ status: err.message });
   }
@@ -99,12 +98,25 @@ userRouter.delete("/delete/:id", async (req, res) => {
 
 
 // logout
-userRouter.post("/logout", async (req, res) => {
+userRouter.get("/logout", async (req, res) => {
   try {
-    const cookieMail = req.cookies.email;
-    const tokens = JSON.parse(await redisclient.GET(cookieMail));
-    // console.log(tokens)
-    await redisclient.HSET("blockedToken", cookieMail, tokens.token);
+    let cookieMail = req.cookies.email;
+    console.log(cookieMail,"1")
+    let tokens
+    if (cookieMail) {
+      tokens = JSON.parse(await redisclient.GET(cookieMail))
+      await redisclient.HSET("blockedToken", cookieMail, tokens.token);
+      console.log(cookieMail)
+    }
+    else {
+      let email = await redisclient.GET("email")
+      tokens = JSON.parse(await redisclient.GET(email));
+      await redisclient.HSET("blockedToken", email, tokens.token);
+      console.log(email,"google")
+    }
+
+    console.log(tokens)
+  
     res.send("Logout Sucessfully blocked token store in redis");
   } catch (error) {
     res.status(404).json({ err: error.message });
