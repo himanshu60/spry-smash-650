@@ -246,6 +246,9 @@ body {
 
 /* CHAT BOX */
 .chatbox {
+    background-image: url("https://cdn.dribbble.com/users/2058540/screenshots/8225138/media/af6d6d059328c6f2f9f6e7878c094c7e.gif");
+    background-repeat: no-repeat;
+    background-position: center;
     position: relative;
     width: 100%;
     height: calc(100% - 120px);

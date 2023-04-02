@@ -61,7 +61,7 @@ userRouter.post("/login", async (req, res, next) => {
         await redisclient.SET(user.email, JSON.stringify({ token }));
         res.cookie("email", `${user.email}`);
         // await redisclient.SET("tokens", JSON.stringify({token}));
-        res.json({ msg: "LogIn Sucessfully", token });
+        res.json({ msg: "LogIn Sucessfully", token, email, id: user._id });
       } else {
         res.status(404).json({ err: "Wrong credentials" });
       }
@@ -101,7 +101,7 @@ userRouter.delete("/delete/:id", async (req, res) => {
 userRouter.get("/logout", async (req, res) => {
   try {
     let cookieMail = req.cookies.email;
-    console.log(cookieMail,"1")
+    console.log(cookieMail, "1")
     let tokens
     if (cookieMail) {
       tokens = JSON.parse(await redisclient.GET(cookieMail))
@@ -112,12 +112,13 @@ userRouter.get("/logout", async (req, res) => {
       let email = await redisclient.GET("email")
       tokens = JSON.parse(await redisclient.GET(email));
       await redisclient.HSET("blockedToken", email, tokens.token);
-      console.log(email,"google")
+      console.log(email, "google")
     }
 
     console.log(tokens)
-  
-    res.send("Logout Sucessfully blocked token store in redis");
+    // let X = path.join("/../../frontend/login.html");
+    // res.redirect("/google/login");
+    res.send(`Logout Successfull`);
   } catch (error) {
     res.status(404).json({ err: error.message });
   }

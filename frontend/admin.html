@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js" ></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
 
     <script src="https://kit.fontawesome.com/e962f2728f.js" crossorigin="anonymous"></script>
     <title>DASHBOARD</title>
     <style>
-       #menu .items li:nth-child(1){
-        border-left: 4px solid white;
-       }
+        #menu .items li:nth-child(1) {
+            border-left: 4px solid white;
+        }
     </style>
     <link rel="stylesheet" href="./style/adminPage.css">
 </head>
+
 <body>
     <!-- side nav bar -->
     <section id="menu">
@@ -23,10 +25,10 @@
             <h4>Hangout</h4>
         </div>
         <div class="items">
-           <li><i class="fa-solid fa-chart-simple"></i> <a href="./admin.html">DASHBOARD</a></li> 
-           <li><i class="fa-solid fa-circle-info"></i> <a href="./userinfo.html">USER INFO</a></li>
-           <li><i class="fa-solid fa-people-group"></i> <a href="./totalCustomer.html">TOTAL CUSTOMER</a></li>
-          
+            <li><i class="fa-solid fa-chart-simple"></i> <a href="./admin.html">DASHBOARD</a></li>
+            <li><i class="fa-solid fa-circle-info"></i> <a href="./userinfo.html">USER INFO</a></li>
+            <li><i class="fa-solid fa-people-group"></i> <a href="./totalCustomer.html">TOTAL CUSTOMER</a></li>
+
         </div>
     </section>
     <!-- top search section -->
@@ -96,90 +98,91 @@
                         <td></td>
                     </tr>
                 </thead>
-               <tbody>
-               
-               </tbody>
+                <tbody>
+
+                </tbody>
             </table>
         </div>
     </section>
     <script>
         // toggle
-        $(`#menu-btn`).click(function(){
+        $(`#menu-btn`).click(function () {
             $(`#menu`).toggleClass("active")
         })
-// variables
-let tbody =document.querySelector("tbody")
-       let changeProfile= document.getElementById("pro")
-       let email = localStorage.getItem("e")
-       let data =JSON.parse(localStorage.getItem("email"))
-       let x;
-       let edit= document.querySelectorAll(".edit")
-// getting profile
-       data.forEach((ele) => {
-        if(ele.email==email){
-            x=ele.profile
-        }
-       });
-       changeProfile.src=`${x}`
+        // variables
+        let tbody = document.querySelector("tbody")
+        let changeProfile = document.getElementById("pro")
+        let email = localStorage.getItem("e")
+        let data = JSON.parse(localStorage.getItem("email"))
+        let x;
+        let edit = document.querySelectorAll(".edit")
+        // getting profile
+        data.forEach((ele) => {
+            if (ele.email == email) {
+                x = ele.profile
+            }
+        });
+        changeProfile.src = `${x}`
 
-    // admin data
-let arr=[{img:"image/himanshu.png", name:"Himanshu", email:"himanshu@gmail.com", desc:"owner", p:"web devloper", active:"active", role:"Team lead", edit:"View Profile", work:"", contact:{number:09898709, github:"https://github.com/himanshu60", linkdin:"" }},
-{img:"image/person-logo.png", name:"Rahul", email:"rahul@gmail.com", desc:"section", p:"web devloper", active:"active", role:"developer", edit:"View Profile" , work:"",contact:{number:09898709, github:"https://github.com/257277", linkdin:"", }},
-{img:"image/saloni.png", name:"saloni", email:"saloni@gmail.com", desc:"section", p:"web devloper", active:"active", role:"developer", edit:"View Profile",  work:"",contact:{number:09898709, github:"https://github.com/Saloni0282", linkdin:"" }},
-{img:"image/person-logo.png", name:"Yuvraj", email:"yuvraj@gmail.com", desc:"section", p:"web devloper", active:"active", role:"developer", edit:"View Profile", work:"",contact:{number:09898709, github:"https://github.com/Yuvraj1307", linkdin:"", }},
-]
+        // admin data
+        let arr = [{ img: "image/himanshu.png", name: "Himanshu", email: "himanshu@gmail.com", desc: "owner", p: "web devloper", active: "active", role: "Team lead", edit: "View Profile", work: "", contact: { number: 09898709, github: "https://github.com/himanshu60", linkdin: "" } },
+        { img: "image/person-logo.png", name: "Rahul", email: "rahul@gmail.com", desc: "section", p: "web devloper", active: "active", role: "developer", edit: "View Profile", work: "", contact: { number: 09898709, github: "https://github.com/257277", linkdin: "", } },
+        { img: "image/saloni.png", name: "saloni", email: "saloni@gmail.com", desc: "section", p: "web devloper", active: "active", role: "developer", edit: "View Profile", work: "", contact: { number: 09898709, github: "https://github.com/Saloni0282", linkdin: "" } },
+        { img: "image/person-logo.png", name: "Yuvraj", email: "yuvraj@gmail.com", desc: "section", p: "web devloper", active: "active", role: "developer", edit: "View Profile", work: "", contact: { number: 09898709, github: "https://github.com/Yuvraj1307", linkdin: "", } },
+        ]
 
 
-arr.forEach((ele) => {
-    let tr =document.createElement("tr")
-    // 1st td
-    let td1 = document.createElement("td")
-    td1.classList.add("people")
-    let img = document.createElement("img")
-    img.setAttribute("src" , `${ele.img}`)
-    let div= document.createElement("div")
-    div.classList.add("people-de")
-    let h5= document.createElement("h5")
-    h5.innerText=`${ele.name}`
-    let p =document.createElement("p")
-    p.innerText= `${ele.email}`
-    div.append(h5 , p)
-    td1.append(img, div)
-    // 2nd td
-    let td2= document.createElement("td")
-    td2.classList.add("people-des")
-    let h52= document.createElement("h5")
-    h52.innerText=`${ele.desc}`
-    let p2=document.createElement("p")
-    p2.innerText=`${ele.p}`
-    td2.append(h52, p2)
-    // 3rd td
-    let td3 = document.createElement("td")
-    td3.classList.add("active")
-    let p3 = document.createElement("p")
-    p3.innerText=`${ele.active}`
-    td3.append(p3)
-    // 4th td
-    let td4 = document.createElement("td")
-    td4.classList.add("role")
-    let p4 = document.createElement("p")
-    p4.innerText=`${ele.role}`
-    td4.append(p4)
-    // 5th td
-    let td5 = document.createElement("td")
-    td5.classList.add("edit")
-    let a = document.createElement("a")
-    a.setAttribute("href", "#")
-    a.addEventListener("click", ()=>{
-        localStorage.setItem("see", JSON.stringify(ele))
-        self.location="edit.html"
-    })
-    a.innerText=`${ele.edit}`
-    td5.append(a)
-    tr.append(td1, td2, td3, td4, td5)
-    tbody.append(tr)
-    })
+        arr.forEach((ele) => {
+            let tr = document.createElement("tr")
+            // 1st td
+            let td1 = document.createElement("td")
+            td1.classList.add("people")
+            let img = document.createElement("img")
+            img.setAttribute("src", `${ele.img}`)
+            let div = document.createElement("div")
+            div.classList.add("people-de")
+            let h5 = document.createElement("h5")
+            h5.innerText = `${ele.name}`
+            let p = document.createElement("p")
+            p.innerText = `${ele.email}`
+            div.append(h5, p)
+            td1.append(img, div)
+            // 2nd td
+            let td2 = document.createElement("td")
+            td2.classList.add("people-des")
+            let h52 = document.createElement("h5")
+            h52.innerText = `${ele.desc}`
+            let p2 = document.createElement("p")
+            p2.innerText = `${ele.p}`
+            td2.append(h52, p2)
+            // 3rd td
+            let td3 = document.createElement("td")
+            td3.classList.add("active")
+            let p3 = document.createElement("p")
+            p3.innerText = `${ele.active}`
+            td3.append(p3)
+            // 4th td
+            let td4 = document.createElement("td")
+            td4.classList.add("role")
+            let p4 = document.createElement("p")
+            p4.innerText = `${ele.role}`
+            td4.append(p4)
+            // 5th td
+            let td5 = document.createElement("td")
+            td5.classList.add("edit")
+            let a = document.createElement("a")
+            a.setAttribute("href", "#")
+            a.addEventListener("click", () => {
+                localStorage.setItem("see", JSON.stringify(ele))
+                self.location = "edit.html"
+            })
+            a.innerText = `${ele.edit}`
+            td5.append(a)
+            tr.append(td1, td2, td3, td4, td5)
+            tbody.append(tr)
+        })
 
     </script>
 </body>
+
 </html>
