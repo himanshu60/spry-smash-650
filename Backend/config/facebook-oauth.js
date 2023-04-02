@@ -2,6 +2,8 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 const passport2 = require("passport");
 const { UserModel } = require("../models/user.schema");
 const { v4: uuidv4 } = require("uuid");
+const {redisclient}=require("./redis")
+const { JsonWebTokenError } = require("jsonwebtoken");
 require("dotenv").config();
 passport2.use(
   new FacebookStrategy(
@@ -12,6 +14,7 @@ passport2.use(
       profileFields: ["id", "displayName", "photos", "email"],
     },
     async function (accessToken, refreshToken, profile, cb) {
+      await redisclient.SET("tokens", JSON.stringify({"token":accessToken}));
       let email = profile._json.email;
       let udata = await UserModel.findOne({ email });
       if (udata) {
