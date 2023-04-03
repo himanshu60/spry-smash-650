@@ -17,7 +17,8 @@ Deployed Link :- https://stately-kitten-3c373e.netlify.app/index.html
 → Node Modules: mongoose.js | bcrypt | cors | dotenv | jsonwebtoken | nodemon
 
 # Site Map for Project
-![flowchart-removebg-preview](https://user-images.githubusercontent.com/65457075/229416834-14ab3bf3-d3f9-4c11-876f-c0e34958dd9d.png)
+
+![hnagout-site-map](https://user-images.githubusercontent.com/65457075/229422084-c4d902a9-facd-41ff-820f-51c673d5bf29.PNG)
 
 
 # API end points
