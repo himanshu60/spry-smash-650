@@ -191,3 +191,47 @@ img {
     border-color: #6c3bee;
     font-weight: 300;
 }
+
+footer {
+  
+    width: 100%;
+    margin-top: 50px;
+    background-color: #e4e0ee;
+    height: 500px;
+    padding: 5%;
+    display: flex;
+    justify-content: space-around;
+}
+
+footer h1 {
+    font-size: 50px;
+}
+
+footer img {
+    border-radius: 25%;
+    width: 60%;
+    height: 80%;
+}
+
+footer .left {
+   
+    width: 40%;
+}
+
+footer .left h1 {
+    margin-left: 17%;
+}
+
+footer .right {
+  
+    width: 50%;
+}
+
+footer .right ul {
+    list-style: none;
+}
+
+footer .right ul li {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
