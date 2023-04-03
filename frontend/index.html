@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hangout</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
   <link rel="stylesheet" href="./style/index.css" />
 </head>
 
@@ -13,18 +14,36 @@
 
   <!-- navbar -->
   <header>
-    <a href="./index.html" class="logo"><i class="fas fa-utensils"></i><img src="./image/Hangout copy.jpg" alt=""></a>
+
+    <a href="./index.html" class="logo"><img src="./image/Hangout copy.jpg" alt=""></a>
     <nav class="navbar">
+
       <a href="./signup.html" class="active">Messages Dashboard</a>
       <a href="./profile.html">Admin</a>
       <a href="./login.html">LogIn</a>
       <a href="./signup.html">SignUp</a>
 
-
     </nav>
 
   </header>
+  <div class="burger">
+    <span onclick="opennav()" class="line">&#9776;</span>
+    <!-- <img src="./image/Hangout copy.jpg" alt="logo"> -->
+  </div>
+  <div class="sidenav">
+    <div class="sidenav1">
+      <span onclick="closenav()">&#9776;</span>
+      <img src="./image/Hangout copy.jpg" alt="logo">
+    </div>
 
+    <a href="./index.html" class="placeicon">&#xf015; <span class="text">Home</span></a>
+    <a href="./login.html" class="placeicon">&#xf0ca;<span class="text">Message Dashboard</span> </a>
+    <a href="./profile.html" class="placeicon">&#xf0b1; <span class="text">Admin</span></a>
+    <a href="./signup.html" class="placeicon">&#xf039;<span class="text">Signup</span> </a>
+    <a href="./login.html" class="placeicon">&#xf2f6;<span class="text">Login</span></a>
+
+
+  </div>
   <div id="first">
     <div id="left">
       <h1>Hangout</h1>
@@ -44,6 +63,7 @@
     </div>
   </div>
   <footer>
+
     <div class="left">
       <img src="./image/Hangout copy.jpg" alt="" />
       <h1>Hangout</h1>
@@ -51,7 +71,7 @@
     <div class="right">
       <h1>Contributors</h1>
       <ul>
-        <li>Sonali</li>
+        <li>Saloni</li>
         <li>Himanshu</li>
         <li>Rahul Sharma</li>
         <li>Yuvraj</li>
@@ -71,7 +91,17 @@
       </ul>
 
     </div>
+
   </footer>
 </body>
+<script>
+  let opennav = () => {
+    document.querySelector(".sidenav").style.width = "250px";
+  }
+  let closenav = () => {
+    document.querySelector(".sidenav").style.width = "0px";
+  }
+
+</script>
 
 </html>

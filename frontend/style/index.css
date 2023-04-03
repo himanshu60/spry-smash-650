@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
-:root{
-    --green:#27ae60;
-    --black:#192a56;
-    --light-color:#666;
-    --box-shadow:0 .5rem rgba(0,0,0,0.1);
+
+:root {
+    --green: #27ae60;
+    --black: #192a56;
+    --light-color: #666;
+    --box-shadow: 0 .5rem rgba(0, 0, 0, 0.1);
 }
-*{
-    font-family: "Nunito",sans-serif;
+
+* {
+    font-family: "Nunito", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -17,27 +19,30 @@
     transition: all .2s linear;
 }
 
-section{
+section {
     padding: 2rem 9%;
 }
-section:nth-child(even){
+
+section:nth-child(even) {
     background: #eee;
 }
 
-.sub-heading{
+.sub-heading {
     text-align: center;
-    color:var(--green);
+    color: var(--green);
     font-size: 2rem;
     padding-top: 1rem;
 }
-.heading{
-    text-align: center; 
-    color:var(--black);
+
+.heading {
+    text-align: center;
+    color: var(--black);
     font-size: 3rem;
     padding-bottom: 2rem;
     text-transform: uppercase;
 }
-.btn{
+
+.btn {
     margin-top: 1rem;
     display: inline-block;
     font-size: 1.7rem;
@@ -45,14 +50,15 @@ section:nth-child(even){
     background: var(--black);
     border-radius: .5rem;
     cursor: pointer;
-    padding:.8rem 3rem;
+    padding: .8rem 3rem;
 }
-.btn:hover{
+
+.btn:hover {
     background: var(--green);
     letter-spacing: .1rem;
 }
 
-html{
+html {
     font-size: 62.5%;
     overflow-x: hidden;
     scroll-padding-top: 5.5rem;
@@ -60,7 +66,7 @@ html{
 }
 
 
-header{
+header {
     position: fixed;
     top: 0;
     left: 0;
@@ -72,58 +78,86 @@ header{
     justify-content: space-between;
     z-index: 1000;
     box-shadow: var(--box-shadow);
+    height: 60px;
 }
-header .logo{
+
+header .logo {
     color: var(--black);
     font-size: 2.5rem;
     font-weight: bolder;
 }
-header .logo i{
+
+header .logo i {
     color: var(--green);
 
 }
-header .logo  img{
-    
-    height: 45px;
+
+header .logo {
+
+    height: 100%;
     margin-left: 11px;
     margin-top: 1px;
     width: 90px;
-    
-    
-}
-header .navbar a {
-    font-size: 1.7rem;
-    border-radius: 0.5rem;
-    padding: 1.5rem 9.5rem;
-    color: var(--light-color);
-}
-header .navbar a.active,
-header .navbar a:hover{
-    color:#fff;
-    background: var(--green);
+
 
 }
+
+header .navbar {
+
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+header .navbar a {
+
+    font-size: 1.7rem;
+    border-radius: 0.5rem;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    color: var(--light-color);
+}
+
+header .navbar a.active,
+header .navbar a:hover {
+    color: #fff;
+    background-color: rgb(55, 138, 55);
+
+}
+
 header .icons i,
-header .icons a{
+header .icons a {
     cursor: pointer;
     margin-left: .5rem;
-    height: 4.5rem;
+    height: 100%;
     line-height: 4.5rem;
-    width: 4.5rem;
+    width: 20%;
     font-size: 1.7rem;
     color: var(--black);
     border-radius: 50%;
     background: #eee;
     text-align: center;
 }
+
 header .icons i:hover,
-header .icons a:hover{
-    color:#fff;
+header .icons a:hover {
+    color: #fff;
     background: var(--green);
     transform: rotate(360deg);
 
 }
-header .icons #menu-bars{
+
+header .icons #menu-bars {
+    display: none;
+}
+
+.sidenav {
+    display: none;
+}
+
+.burger {
     display: none;
 }
 
@@ -156,15 +190,15 @@ img {
 } */
 
 #left h1 {
-    font-size: 60px;
+    font-size: 30px;
 }
 
 #left h2 {
-    font-size: 35px;
+    font-size: 20px;
 }
 
 #left p {
-    font-size: 25px;
+    font-size: 15px;
 }
 
 #left button {
@@ -178,11 +212,12 @@ img {
     background-color: transparent;
     border: 2px solid transparent;
     padding: 4px 12px;
-    font-size: 2.2rem;
-    border-radius: -17.75rem;
+    font-size: 20px;
+    border-radius: 10px;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     color: #6c3bee;
     border-color: #6c3bee;
+    margin-top: 40PX;
 }
 
 #left button:hover {
@@ -193,7 +228,7 @@ img {
 }
 
 footer {
-  
+
     width: 100%;
     margin-top: 50px;
     background-color: #e4e0ee;
@@ -204,26 +239,26 @@ footer {
 }
 
 footer h1 {
-    font-size: 50px;
+    font-size: 25px;
 }
 
 footer img {
     border-radius: 25%;
-    width: 60%;
-    height: 80%;
+    width: 50%;
+    height: 50%;
 }
 
 footer .left {
-   
+
     width: 40%;
 }
 
 footer .left h1 {
-    margin-left: 17%;
+    margin-left: 10%;
 }
 
 footer .right {
-  
+
     width: 50%;
 }
 
@@ -232,6 +267,113 @@ footer .right ul {
 }
 
 footer .right ul li {
-    font-size: 25px;
+    font-size: 15px;
     margin-bottom: 15px;
+}
+
+@media (max-width: 1245px) {
+    header {
+        display: none;
+    }
+
+    .burger {
+        display: block;
+        margin-left: 2%;
+        margin-top: 2%;
+        font-size: 25px;
+        align-items: center;
+    }
+
+    .burger .line {
+        margin-top: -1%;
+    }
+
+    .burger img {
+        width: 3%;
+        height: 3%;
+        margin-left: 2%;
+
+    }
+
+    #first {
+
+        /* border: 1px solid black; */
+        width: 80%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin-top: 90px;
+
+    }
+
+    #first #left {
+        width: 80%;
+        margin: auto;
+
+        text-align: center;
+        margin-bottom: 2%;
+    }
+
+    #first #right {
+        margin: auto;
+
+    }
+
+    #first #right img {
+        width: 100%;
+    }
+
+    .sidenav {
+
+        position: fixed;
+        background-color: #e4e0ee;
+        width: 250px;
+        display: block;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        display: flex;
+        flex-direction: column;
+        transition: 0.2s;
+        overflow: hidden;
+    }
+
+    .placeicon {
+
+        font-family: fontawesome;
+        color: black;
+    }
+
+    .sidenav a {
+        margin-top: 30px;
+        text-decoration: none;
+        font-size: 20px;
+        margin-left: 20px;
+        color: black;
+    }
+
+    .sidenav .text {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-left: 30px;
+    }
+
+    .sidenav1 {
+
+        height: 80px;
+        display: flex;
+        font-size: 30px;
+        align-items: center;
+        padding-left: 25px;
+        background-color: white;
+
+    }
+
+    .sidenav1 img {
+        height: 80px;
+        padding-left: 45px;
+        margin-top: -10px;
+    }
 }
