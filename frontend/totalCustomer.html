@@ -109,7 +109,7 @@
 
     async function update() {
 
-        let res = await fetch("http://localhost:8080/user/get")
+        let res = await fetch("https://hangout-backend.onrender.com/user/get")
         let data = await res.json();
         display(data);
         console.log(data);
@@ -119,7 +119,7 @@
 
             item.addEventListener("click", async () => {
                 console.log(item.classList[0]);
-                let res = await fetch(`http://localhost:8080/user/delete/${item.classList[0]}`, {
+                let res = await fetch(`https://hangout-backend.onrender.com/user/delete/${item.classList[0]}`, {
                     method: "DELETE",
 
                 })

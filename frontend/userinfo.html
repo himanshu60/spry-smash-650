@@ -103,7 +103,7 @@
 
     async function update() {
 
-        let res = await fetch("http://localhost:8080/user/get")
+        let res = await fetch("https://hangout-backend.onrender.com/user/get")
         let data = await res.json();
         display(data);
         console.log(data);

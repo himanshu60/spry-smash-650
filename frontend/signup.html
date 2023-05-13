@@ -61,7 +61,7 @@
   async function sgnup(data) {
     //  console.log(data)
     try {
-      let res = await fetch("http://localhost:8080/user/signup", {
+      let res = await fetch("https://hangout-backend.onrender.com/user/signup", {
         method: "POST",
         body: JSON.stringify(data),
         headers: { "Content-type": "application/json" },
