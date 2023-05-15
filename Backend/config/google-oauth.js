@@ -1,7 +1,7 @@
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 require("dotenv").config();
-const {redisclient}=require("./redis")
+const { redisclient } = require("./redis")
 const { UserModel } = require("../models/user.schema");
 const { v4: uuidv4 } = require("uuid");
 passport.use(
@@ -9,10 +9,10 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:8080/google/auth/google/callback",
+      callbackURL: "https://zany-gray-clownfish-shoe.cyclic.app/google/auth/google/callback",
     },
     async function (accessToken, refreshToken, profile, cb) {
-      await redisclient.SET("tokens", JSON.stringify({"token":accessToken}));
+      await redisclient.SET("tokens", JSON.stringify({ "token": accessToken }));
       let email = profile._json.email;
       let udata = await UserModel.findOne({ email });
       if (udata) {

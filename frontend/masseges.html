@@ -616,13 +616,13 @@
     i.addEventListener("click", () => {
       window.location.href = "./index.html";
     })
-    let socket = io("http://localhost:8080", {
+    let socket = io("https://hangout-backend.onrender.com", {
       transports: ["websocket"]
     });
 
     let logout_btn = document.querySelector(".header_right button");
     logout_btn.addEventListener("click", async () => {
-      let url = "http://localhost:8080/user/logout";
+      let url = "https://hangout-backend.onrender.com/user/logout";
       let res = await fetch(url, {
         method: "GET",
         headers:
