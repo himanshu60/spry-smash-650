@@ -1,5 +1,5 @@
 const { passport } = require("../config/google-oauth");
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -33,7 +33,7 @@ googlerouter.get(
   function (req, res) {
     let user = req.user;
 
-    res.redirect(`http://192.168.1.3:5502/frontend/masseges.html?id=${user._id}`);
+    res.redirect(`${process.env.base_url}/frontend/masseges.html?id=${user._id}`);
   }
 );
 

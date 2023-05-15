@@ -1,5 +1,5 @@
 const express = require("express");
-
+require("dotenv").config();
 const { passport3 } = require("../config/github-oauth");
 const githubRouter = express.Router();
 const path = require("path");
@@ -27,7 +27,7 @@ githubRouter.get(
   }),
   function (req, res) {
     let user = req.user;
-    res.redirect(`http://192.168.1.3:5502/frontend/masseges.html?id=${user._id}`);
+    res.redirect(`${process.env.base_url}/masseges.html?id=${user._id}`);
 
   }
 );
