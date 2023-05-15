@@ -10,7 +10,7 @@ passport3.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:8080/auth/github/callback",
+      callbackURL: "https://zany-gray-clownfish-shoe.cyclic.app/auth/github/callback",
       scope: "user:email",
     },
     async function (accessToken, refreshToken, profile, done) {
