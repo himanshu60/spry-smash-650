@@ -15,7 +15,7 @@ passport2.use(
     },
     async function (accessToken, refreshToken, profile, cb) {
       await redisclient.SET("tokens", JSON.stringify({ "token": accessToken }));
-      let email = profile._json.email;
+      let email = profile._json.email; z
       let udata = await UserModel.findOne({ email });
       if (udata) {
         return cb(null, udata);
