@@ -653,6 +653,7 @@
 
     }
     // let email = loggedUser.email;
+    let roomcount = 0;
     let url = "https://hangout-backend.onrender.com/details/get";
     const users = async () => {
       let res = await fetch(url, {
@@ -677,11 +678,18 @@
             let a = z.split(" ");
 
             let roomid = a[a.length - 1];
-
-            socket.emit("roomName", { roomid, id });
-
+            if (roomcount < 1) {
+              socket.emit("roomName", { roomid, id });
+              roomcount++;
+            }
+            else {
+              roomcount = 0;
+              alert("Please login again!");
+              window.location = "./login.html";
+            }
           });
         });
+
         socket.on("join", (data) => {
           console.log("join", data);
           document.querySelector(".chatbox").innerHTML = "";
@@ -710,7 +718,6 @@
         d.append(p);
         document.querySelector(".chatbox").append(d);
         socket.emit("friend_msg", msg);
-
       })
     }
     socket.on("display_friend_msg", (data) => {
@@ -721,6 +728,7 @@
       p.textContent = data;
       d.append(p);
       document.querySelector(".chatbox").append(d);
+
     })
     users();
 

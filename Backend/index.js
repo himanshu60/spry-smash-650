@@ -3,10 +3,10 @@ require("dotenv").config();
 const cors = require("cors");
 const { connection } = require("./config/db");
 const { userRouter } = require("./routes/user.route");
-const { githubRouter } = require("./loginRoute/github.route");
-const { googlerouter } = require("./loginRoute/g-oauthroute");
+// const { githubRouter } = require("./loginRoute/github.route");
+// const { googlerouter } = require("./loginRoute/g-oauthroute");
 const { authmiddleware } = require("./middleware/authenticate");
-const { fbrouter } = require("./loginRoute/fb-oauthrout");
+// const { fbrouter } = require("./loginRoute/fb-oauthrout");
 const cookieParser = require("cookie-parser");
 const { detailUserRoute } = require("./routes/detailroute");
 const app = express();
@@ -16,9 +16,22 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ "origin": "*" }));
+app.use(cors({ origin: "*" }));
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', '*');
+//   next();
+// });
+
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
 //   next();
 // });
 // <------------   Socket.io  ----------------->
@@ -46,7 +59,6 @@ io.on("connection", (socket) => {
       // io.to(`${roomName}`).emit("display_friend_msg", msg);
       socket.to(`${data.id}`).to(`${roomName}`).emit("display_friend_msg", x);
     })
-
   })
 
 });
@@ -54,9 +66,9 @@ io.on("connection", (socket) => {
 
 // <------------   Socket end ----------------->
 app.use("/user", userRouter);
-app.use("/", githubRouter);
-app.use("/google", googlerouter);
-app.use("/facebook", fbrouter);
+// app.use("/", githubRouter);
+// app.use("/google", googlerouter);
+// app.use("/facebook", fbrouter);
 app.use("/details", detailUserRoute);
 
 server.listen(process.env.port, async () => {

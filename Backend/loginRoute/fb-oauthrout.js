@@ -3,6 +3,7 @@ const path = require("path");
 const express = require("express");
 const fbrouter = express.Router();
 const cookieParser = require('cookie-parser');
+require("dotenv").config();
 fbrouter.use(cookieParser())
 // let user;
 
@@ -29,7 +30,7 @@ fbrouter.get(
     let user = req.user;
 
 
-    res.redirect(`http://192.168.1.3:5502/frontend/masseges.html?id=${user._id}`);
+    res.redirect(`${process.env.base_url}/frontend/masseges.html?id=${user._id}`);
   }
 );
 module.exports = { fbrouter };
