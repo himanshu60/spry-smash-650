@@ -51,6 +51,9 @@ GET/frontend/userinfo.html
 ![hangout-message-page](https://user-images.githubusercontent.com/65457075/229415981-7f531584-3c68-4b1e-bf19-02a1603db2b4.PNG)
 
 # Admin-Login-page
+# AdminDetails:
+username:himanshu@gmail.com <br>
+password:admin4321
 ![hangout-admin-login](https://user-images.githubusercontent.com/65457075/229414100-76a409de-aae3-4d74-9f67-d072ec1a378b.PNG)
 
 # User-Details
@@ -62,7 +65,6 @@ GET/frontend/userinfo.html
 
 
 # Admin-dashboard
-
 ![hangout-admin-dashboard](https://user-images.githubusercontent.com/65457075/229414186-5f39ae5b-4576-4322-927c-51085cb48993.PNG)
 
 # FeedBack
