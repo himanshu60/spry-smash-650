@@ -48,7 +48,15 @@ GET/frontend/userinfo.html
 
 # Messages-Page
 
-![hangout-message-page](https://user-images.githubusercontent.com/65457075/229415981-7f531584-3c68-4b1e-bf19-02a1603db2b4.PNG)
+## User 1
+![user1](https://github.com/himanshu60/spry-smash-650/assets/65457075/a07a48cc-d7de-4eea-9047-b386b24ff9d2)
+
+
+## User 2
+
+![user2](https://github.com/himanshu60/spry-smash-650/assets/65457075/1d0e82d2-500e-4930-ae61-cdfde101c477)
+
+
 
 # Admin-Login-page
 # AdminDetails:
