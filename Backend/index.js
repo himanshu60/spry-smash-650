@@ -131,7 +131,9 @@ app.use("/user", userRouter);
 app.use("/details", detailUserRoute);
 app.use("/messages", messageRouter);
 
-const PORT = process.env.port || process.env.PORT || 8080;
+// Prefer the platform-provided PORT (Render/Railway set this) over a stray
+// lowercase `port` from a .env, so hosting always binds the right port.
+const PORT = process.env.PORT || process.env.port || 8080;
 server.listen(PORT, async () => {
   try {
     await connection;
