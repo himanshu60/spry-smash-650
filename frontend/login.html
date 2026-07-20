@@ -2,103 +2,155 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="./style/login.css">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in · HangOut</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style/theme.css" />
+  <link rel="stylesheet" href="./style/auth.css" />
+  <script>
+    (function () { try { var t = localStorage.getItem('hangout-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) { } })();
+  </script>
 </head>
 
 <body>
-    <div id="nav">
-        <a href="./index.html"> <img src="./image/Hangout copy.jpg" alt=""></a>
-        <!-- <div class="left">
-            <a href="">
-                <p>Messages Dashboard</p>
-            </a>
-            <a href="./login.html">
-                <p>Login</p>
-            </a>
-            <a href="./signup.html">
-                <p>Signup</p>
-            </a> -->
+  <div class="auth">
+    <!-- Showcase -->
+    <aside class="auth-aside">
+      <a href="./index.html" class="brand" style="color:#fff">
+        <span class="brand-mark">H</span> HangOut
+      </a>
+      <div class="auth-hero">
+        <h1>Welcome back to the conversation.</h1>
+        <p>Fast, secure, real-time messaging — reimagined with a premium experience.</p>
+      </div>
+      <div class="auth-features">
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Real-time delivery over WebSockets</div>
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Encrypted passwords &amp; token auth</div>
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Beautiful dark &amp; light themes</div>
+      </div>
+    </aside>
 
-    </div>
-    <div id="container">
-        <div id="left">
-            <img src="https://workdesk.netlify.app/routes/loginsignup/images/signin-image.jpg" alt="">
-            <p><a href="./signup.html">Create an account</a></p>
-        </div>
-        <div id="right">
-            <h1>Log in</h1>
-            <form action="">
-                <label for="email">Email</label><br>
-                <input type="email" id="email"><br>
-                <label for="password">Password</label>
-                <input type="password" id="password"><br>
-                <button id="login">Log in</button>
-            </form>
-            <div id="right1">
-                <p>or login with</p>
-                <div>
-                    <a href="https://github.com/login/oauth/authorize?client_id=568155812b74c0d612c7&scope=user:email"><img
-                            src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_960_720.png"
-                            alt="github"></a>
-                    <a href="https://zany-gray-clownfish-shoe.cyclic.app/auth/google">
-                        <img src="data:image/png;base64,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"
-                            alt="google">
-                    </a>
+    <!-- Form -->
+    <main class="auth-main">
+      <div class="auth-topbar">
+        <button class="theme-toggle" id="themeToggle"></button>
+      </div>
 
-                    <a href="https://zany-gray-clownfish-shoe.cyclic.app/auth/facebook/" class="btn btn-warning"><span
-                            class="fa fa-facebook"><img
-                                src="data:image/png;base64,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"
-                                alt=""></a>
+      <div class="auth-card">
+        <a href="./index.html" class="mini-brand"><span class="brand-mark">H</span> HangOut</a>
+        <h2>Log in</h2>
+        <p class="sub">Enter your credentials to access your messages.</p>
 
-                </div>
+        <form class="auth-form" id="loginForm" novalidate>
+          <div class="auth-error" id="err">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errText"></span>
+          </div>
 
+          <div class="field">
+            <label for="email">Email</label>
+            <div class="input-icon">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></span>
+              <input class="input" type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
             </div>
+          </div>
 
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-icon">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" required />
+              <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="login" type="submit">Log in</button>
+        </form>
+
+        <div class="divider">or continue with</div>
+        <div class="social-row">
+          <button class="social-btn" data-provider="Google" title="Google">
+            <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.8 1.5l2.6-2.5C17.1 6.9 14.8 6 12 6 6.9 6 2.8 10.1 2.8 12s4.1 6 9.2 6c5.3 0 8.8-3.7 8.8-9 0-.6-.1-1-.2-1.5H12z"/></svg>
+          </button>
+          <button class="social-btn" data-provider="GitHub" title="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.36 1.12 2.94.85.09-.66.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.34 9.34 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+          </button>
+          <button class="social-btn" data-provider="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+          </button>
         </div>
+
+        <p class="auth-alt">Don't have an account? <a href="./signup.html">Create one</a></p>
+      </div>
+    </main>
+  </div>
+
+  <script src="./js/ui.js"></script>
+  <script>
+    UI.mountThemeToggle("#themeToggle");
+
+    var form = document.getElementById("loginForm");
+    var btn = document.getElementById("login");
+    var errBox = document.getElementById("err");
+    var errText = document.getElementById("errText");
+
+    function showError(msg) {
+      errText.textContent = msg;
+      errBox.classList.add("show");
+    }
+
+    // password visibility toggle
+    document.getElementById("togglePw").addEventListener("click", function () {
+      var pw = document.getElementById("password");
+      pw.type = pw.type === "password" ? "text" : "password";
+    });
+
+    // social buttons (OAuth not configured server-side)
+    Array.prototype.forEach.call(document.querySelectorAll(".social-btn"), function (b) {
+      b.addEventListener("click", function () {
+        UI.toast(b.dataset.provider + " login isn't configured yet — use email & password.", { type: "error", duration: 4000 });
+      });
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      errBox.classList.remove("show");
+      var email = document.getElementById("email").value.trim();
+      var password = document.getElementById("password").value;
+      if (!email || !password) { showError("Please enter your email and password."); return; }
+      lgn({ email: email, password: password });
+    });
+
+    async function lgn(data) {
+      btn.classList.add("loading");
+      try {
+        var res = await fetch("/user/login", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-type": "application/json" },
+        });
+        if (res.ok) {
+          var X = await res.json();
+          localStorage.setItem("LoggedUser", JSON.stringify({ email: X.email, id: X.id }));
+          UI.toast("Welcome back!", { type: "success" });
+          setTimeout(function () { location.href = "./masseges.html"; }, 500);
+        } else {
+          var body = await res.json().catch(function () { return {}; });
+          showError(body.err || body.message || "Invalid credentials. Please try again.");
+          btn.classList.remove("loading");
+        }
+      } catch (err) {
+        showError("Network error — is the server running?");
+        btn.classList.remove("loading");
+      }
+    }
+  </script>
 </body>
 
 </html>
-<!-- <script src="./scripts/login.js"></script> -->
-
-<script>
-    let btn = document.getElementById("login")
-    btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        let email = document.getElementById("email").value
-        let password = document.getElementById("password").value
-        let obj = {
-            email,
-            password
-        }
-        lgn(obj)
-    })
-
-    async function lgn(data) {
-        console.log(data)
-        try {
-            let res = await fetch("/user/login", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: { "Content-type": "application/json" }
-            })
-            if (res.ok) {
-                let X = await res.json()
-
-                let obj = { email: X.email, id: X.id }
-
-                localStorage.setItem("LoggedUser", JSON.stringify(obj));
-
-                alert("login successful")
-                window.location.href = "./masseges.html"
-
-            }
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-</script>
