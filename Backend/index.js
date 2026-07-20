@@ -66,6 +66,12 @@ io.on("connection", (socket) => {
       // io.to(`${roomName}`).emit("display_friend_msg", msg);
       socket.to(`${data.id}`).to(`${roomName}`).emit("display_friend_msg", x);
     })
+
+    // Typing indicator — relayed with the same routing as messages, so it is
+    // exactly as reliable as chat delivery for this room model.
+    socket.on("typing", (state) => {
+      socket.to(`${data.id}`).to(`${roomName}`).emit("display_typing", state);
+    });
   })
 
 });
