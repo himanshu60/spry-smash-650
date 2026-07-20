@@ -45,9 +45,11 @@
   var users = [];
   var currentPeer = null;
   var onlineSet = new Set();          // userIds currently online
-  var threads = {};                   // peerId -> [ {text, mine, time} ]
+  var threads = {};                   // peerId -> [ {id, text, mine, time, status} ]
   var unread = {};                    // peerId -> count
   var lastSender = null;
+  var msgSeq = 0;
+  var BASE_TITLE = "HangOut · Messages";
 
   /* -------- theme + basic wiring -------- */
   UI.mountThemeToggle("#themeToggle");
@@ -80,17 +82,50 @@
 
   socket.on("recv-dm", function (msg) {
     if (!msg || !msg.from) return;
-    var m = { text: msg.text || "", mine: false, time: msg.time || Date.now() };
+    var m = { id: msg.id, text: msg.text || "", mine: false, time: msg.time || Date.now() };
     pushThread(msg.from, m);
-    if (currentPeer && currentPeer._id === msg.from) {
+
+    // acknowledge delivery to the sender
+    socket.emit("dm-delivered", { to: msg.from, from: myId, id: msg.id });
+
+    var openHere = currentPeer && currentPeer._id === msg.from;
+    if (openHere) {
       hideTyping();
       renderMessage(m);
       if (isNearBottom()) scrollToBottom(true); else showScrollFab();
       lastSender = "friend";
-    } else {
+    }
+    // Unread if the chat isn't open, or the tab isn't focused.
+    if (!openHere || !isActive()) {
       unread[msg.from] = (unread[msg.from] || 0) + 1;
+    } else {
+      // read immediately
+      socket.emit("dm-read", { to: msg.from, from: myId });
     }
     updateBlock(msg.from, m.text, m.time);
+    playIncoming();
+    updateTitle();
+  });
+
+  socket.on("dm-delivered", function (ack) {
+    if (!ack || !ack.from || !ack.id) return;
+    var th = threads[ack.from];
+    if (!th) return;
+    for (var i = 0; i < th.length; i++) {
+      if (th[i].id === ack.id && th[i].mine) {
+        if (th[i].status === "sent") th[i].status = "delivered";
+        if (currentPeer && currentPeer._id === ack.from) updateTick(ack.id, th[i].status);
+        break;
+      }
+    }
+  });
+
+  socket.on("dm-read", function (ack) {
+    if (!ack || !ack.from) return;
+    var th = threads[ack.from];
+    if (!th) return;
+    th.forEach(function (m) { if (m.mine) m.status = "read"; });
+    if (currentPeer && currentPeer._id === ack.from) updateAllMineTicks();
   });
 
   socket.on("peer-typing", function (state) {
@@ -205,12 +240,14 @@
     hideTyping();
     msgInput.focus();
 
-    // clear unread
+    // clear unread + tell the peer I've read their messages
     if (unread[peer._id]) {
       unread[peer._id] = 0;
       var badge = chatlistEl.querySelector('.block[data-id="' + peer._id + '"] .unread-badge');
       if (badge) badge.remove();
     }
+    socket.emit("dm-read", { to: peer._id, from: myId });
+    updateTitle();
 
     if (window.matchMedia("(max-width: 820px)").matches) closeSidebar();
   }
@@ -229,9 +266,31 @@
     threads[peerId].push(m);
   }
 
+  function updateTick(id, status) {
+    var wrap = chatboxEl.querySelector('.message[data-msg-id="' + id + '"]');
+    if (!wrap) return;
+    var ticks = wrap.querySelector(".ticks");
+    if (ticks) ticks.outerHTML = ticksSvg(status);
+  }
+  function updateAllMineTicks() {
+    if (!currentPeer) return;
+    var th = threads[currentPeer._id] || [];
+    th.forEach(function (m) { if (m.mine && m.id) updateTick(m.id, m.status); });
+  }
+
+  function ticksSvg(status) {
+    if (status === "sent" || !status) {
+      return '<span class="ticks" title="Sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
+    }
+    var cls = status === "read" ? "ticks double read" : "ticks double";
+    var title = status === "read" ? "Read" : "Delivered";
+    return '<span class="' + cls + '" title="' + title + '"><svg viewBox="0 0 30 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 6 7.5 17 4 13.5"/><polyline points="26 6 14 21"/></svg></span>';
+  }
+
   function renderMessage(m) {
     var wrap = document.createElement("div");
     wrap.className = "message " + (m.mine ? "my_msg" : "friend_msg");
+    if (m.mine && m.id) wrap.dataset.msgId = m.id;
 
     if (!m.mine) {
       var av = UI.avatar(currentPeer ? currentPeer.name : "?", {
@@ -251,10 +310,7 @@
     var meta = document.createElement("div");
     meta.className = "meta";
     meta.innerHTML = "<span>" + formatTime(m.time) + "</span>";
-    if (m.mine) {
-      meta.innerHTML +=
-        '<span class="ticks" title="Sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
-    }
+    if (m.mine) meta.innerHTML += ticksSvg(m.status || "sent");
     bubble.appendChild(meta);
     wrap.appendChild(bubble);
     chatboxEl.appendChild(wrap);
@@ -288,11 +344,12 @@
     var text = msgInput.value.trim();
     if (!text || !currentPeer) return;
     var time = Date.now();
-    var m = { text: text, mine: true, time: time };
+    var id = myId + "-" + time + "-" + (msgSeq++);
+    var m = { id: id, text: text, mine: true, time: time, status: "sent" };
     pushThread(currentPeer._id, m);
     renderMessage(m);
     scrollToBottom(true);
-    socket.emit("send-dm", { to: currentPeer._id, from: myId, text: text, time: time });
+    socket.emit("send-dm", { to: currentPeer._id, from: myId, text: text, time: time, id: id });
     updateBlock(currentPeer._id, text, time);
     msgInput.value = "";
     autoGrow();
@@ -417,7 +474,73 @@
     return h + ":" + (m < 10 ? "0" + m : m) + " " + ampm;
   }
 
+  /* -------- focus / unread title -------- */
+  function isActive() { return !document.hidden && document.hasFocus(); }
+  function totalUnread() {
+    return Object.keys(unread).reduce(function (n, k) { return n + (unread[k] || 0); }, 0);
+  }
+  function updateTitle() {
+    var n = totalUnread();
+    document.title = n > 0 ? "(" + n + ") " + BASE_TITLE : BASE_TITLE;
+  }
+  function onFocusBack() {
+    if (currentPeer && unread[currentPeer._id]) {
+      unread[currentPeer._id] = 0;
+      var badge = chatlistEl.querySelector('.block[data-id="' + currentPeer._id + '"] .unread-badge');
+      if (badge) badge.remove();
+      socket.emit("dm-read", { to: currentPeer._id, from: myId });
+      updateTitle();
+    }
+  }
+  window.addEventListener("focus", onFocusBack);
+  document.addEventListener("visibilitychange", function () { if (isActive()) onFocusBack(); });
+
+  /* -------- notification sound (WebAudio, no assets) -------- */
+  var audioCtx = null;
+  var soundOn = localStorage.getItem("hangout-sound") !== "off";
+  function ensureAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    } catch (e) {}
+  }
+  document.addEventListener("click", ensureAudio);
+  document.addEventListener("keydown", ensureAudio);
+
+  function playIncoming() {
+    if (!soundOn || !audioCtx) return;
+    var t = audioCtx.currentTime;
+    [[0, 660], [0.08, 990]].forEach(function (p) {
+      var o = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      o.type = "sine";
+      o.frequency.value = p[1];
+      o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0.0001, t + p[0]);
+      g.gain.exponentialRampToValueAtTime(0.16, t + p[0] + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + p[0] + 0.18);
+      o.start(t + p[0]); o.stop(t + p[0] + 0.2);
+    });
+  }
+
+  var SND_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>';
+  var SND_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+  var soundBtn = $("#soundBtn");
+  function renderSoundBtn() {
+    soundBtn.innerHTML = soundOn ? SND_ON : SND_OFF;
+    soundBtn.title = soundOn ? "Mute notifications" : "Unmute notifications";
+  }
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
+    localStorage.setItem("hangout-sound", soundOn ? "on" : "off");
+    renderSoundBtn();
+    if (soundOn) { ensureAudio(); playIncoming(); }
+    UI.toast(soundOn ? "Sound on" : "Sound muted", { type: soundOn ? "success" : "" });
+  });
+  renderSoundBtn();
+
   /* -------- go -------- */
   updateSendState();
+  updateTitle();
   loadUsers();
 })();

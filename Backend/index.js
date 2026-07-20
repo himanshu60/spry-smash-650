@@ -85,6 +85,16 @@ io.on("connection", (socket) => {
     socket.to(`user:${state.to}`).emit("peer-typing", state);
   });
 
+  // Delivery / read receipts → relayed back to the original sender.
+  socket.on("dm-delivered", (ack) => {
+    if (!ack || !ack.to) return;
+    socket.to(`user:${ack.to}`).emit("dm-delivered", ack);
+  });
+  socket.on("dm-read", (ack) => {
+    if (!ack || !ack.to) return;
+    socket.to(`user:${ack.to}`).emit("dm-read", ack);
+  });
+
   socket.on("disconnect", () => {
     const userId = socket.data.userId;
     if (!userId) return;

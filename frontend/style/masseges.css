@@ -268,9 +268,11 @@ body { overflow: hidden; }
 }
 .friend_msg .meta { justify-content: flex-start; color: var(--text-3); }
 .my_msg .meta { color: rgba(255, 255, 255, 0.85); }
-.message .ticks { display: inline-flex; }
+.message .ticks { display: inline-flex; align-items: center; }
 .message .ticks svg { width: 15px; height: 15px; }
-.message .ticks.read { color: #7fd0ff; }
+.message .ticks.double svg { width: 20px; height: 15px; }
+.message .ticks.read { color: #6cc6ff; }
+.my_msg .ticks.read { color: #bfe6ff; }
 
 .msg-avatar { margin-bottom: 2px; }
 .msg-avatar.hidden { visibility: hidden; }
