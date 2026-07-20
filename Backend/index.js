@@ -9,6 +9,7 @@ const { authmiddleware } = require("./middleware/authenticate");
 // const { fbrouter } = require("./loginRoute/fb-oauthrout");
 const cookieParser = require("cookie-parser");
 const { detailUserRoute } = require("./routes/detailroute");
+const path = require("path");
 const app = express();
 
 
@@ -17,6 +18,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: "*" }));
+
+// Serve the static frontend from the backend so the whole app runs as a single
+// same-origin service (no CORS/cookie issues, one deploy target).
+app.use(express.static(path.join(__dirname, "../frontend")));
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   next();
@@ -38,7 +43,9 @@ app.use(cors({ origin: "*" }));
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
 
 
 
@@ -71,10 +78,11 @@ app.use("/user", userRouter);
 // app.use("/facebook", fbrouter);
 app.use("/details", detailUserRoute);
 
-server.listen(process.env.port, async () => {
+const PORT = process.env.port || process.env.PORT || 8080;
+server.listen(PORT, async () => {
   try {
     await connection;
-    console.log(`connected to port at ${process.env.port}`);
+    console.log(`connected to port at ${PORT}`);
   } catch (error) {
     console.log(error);
   }

@@ -616,13 +616,13 @@
     i.addEventListener("click", () => {
       window.location.href = "./index.html";
     })
-    let socket = io("https://hangout-backend.onrender.com", {
+    let socket = io({
       transports: ["websocket"]
     });
 
     let logout_btn = document.querySelector(".header_right button");
     logout_btn.addEventListener("click", async () => {
-      let url = "https://hangout-backend.onrender.com/user/logout";
+      let url = "/user/logout";
       let res = await fetch(url, {
         method: "GET",
         headers:
@@ -654,7 +654,7 @@
     }
     // let email = loggedUser.email;
     let roomcount = 0;
-    let url = "https://hangout-backend.onrender.com/details/get";
+    let url = "/details/get";
     const users = async () => {
       let res = await fetch(url, {
         method: "GET",
