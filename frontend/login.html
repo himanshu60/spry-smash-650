@@ -137,7 +137,7 @@
         });
         if (res.ok) {
           var X = await res.json();
-          localStorage.setItem("LoggedUser", JSON.stringify({ email: X.email, id: X.id }));
+          localStorage.setItem("LoggedUser", JSON.stringify({ email: X.email, id: X.id, name: X.name, role: X.role || "user" }));
           UI.toast("Welcome back!", { type: "success" });
           setTimeout(function () { location.href = "./masseges.html"; }, 500);
         } else {

@@ -84,6 +84,13 @@
 
 <script>
 
+    (function () {
+        try {
+            var lu = JSON.parse(localStorage.getItem("LoggedUser"));
+            if (!localStorage.getItem("e") && !(lu && lu.role === "admin")) location.replace("./profile.html");
+        } catch (e) { location.replace("./profile.html"); }
+    })();
+
     let tbody = document.getElementById("append");
 
     async function update() {

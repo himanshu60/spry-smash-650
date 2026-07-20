@@ -29,6 +29,15 @@
 .nav-actions { display: flex; align-items: center; gap: var(--sp-2); }
 .nav-burger { display: none; }
 
+.user-chip {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.user-chip .uc-name { font-size: var(--fs-sm); font-weight: 600; color: var(--text); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ---- Hero ---- */
 .hero { padding: clamp(var(--sp-10), 8vw, 96px) clamp(var(--sp-4), 5vw, var(--sp-12)) var(--sp-12); }
 .hero-inner { max-width: 1000px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }

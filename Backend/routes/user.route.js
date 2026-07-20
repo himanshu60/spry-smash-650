@@ -8,6 +8,16 @@ const { authmiddleware } = require("../middleware/authenticate");
 const path = require("path");
 const userRouter = express.Router();
 
+// Emails treated as admins (configurable via env). Defaults to the accounts
+// documented as admins in the original project.
+const ADMIN_EMAILS = (
+  process.env.ADMIN_EMAILS ||
+  "himanshu@gmail.com,rahul@gmail.com,saloni@gmail.com,yuvraj@gmail.com"
+)
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
 
 userRouter.post("/signup", async (req, res, next) => {
   let { name, email, password } = req.body;
@@ -58,10 +68,26 @@ userRouter.post("/login", async (req, res, next) => {
           expiresIn: "1d",
         });
 
+        // Resolve role: honor a stored admin role or the admin allowlist.
+        const isAdmin =
+          user.role === "admin" ||
+          ADMIN_EMAILS.includes(String(user.email).toLowerCase());
+        const role = isAdmin ? "admin" : "user";
+        if (user.role !== role) {
+          user.role = role;
+          await user.save().catch(() => {});
+        }
+
         await redisclient.SET(user.email, JSON.stringify({ token }));
         res.cookie("email", `${user.email}`);
-        // await redisclient.SET("tokens", JSON.stringify({token}));
-        res.json({ msg: "LogIn Sucessfully", token, email, id: user._id });
+        res.json({
+          msg: "LogIn Sucessfully",
+          token,
+          email,
+          id: user._id,
+          name: user.name,
+          role,
+        });
       } else {
         res.status(404).json({ err: "Wrong credentials" });
       }

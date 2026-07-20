@@ -73,6 +73,19 @@
         </div>
     </section>
     <script>
+        // Access guard (runs first, before any CDN-dependent code): allow
+        // admin-role users (from the main login) OR an existing admin session
+        // (from profile.html). Otherwise send to the admin login.
+        (function () {
+            try {
+                var lu = JSON.parse(localStorage.getItem("LoggedUser"));
+                var adminSession = localStorage.getItem("e");
+                if (!adminSession && !(lu && lu.role === "admin")) {
+                    location.replace("./profile.html");
+                }
+            } catch (e) { location.replace("./profile.html"); }
+        })();
+
         // toggle
         $(`#menu-btn`).click(function () {
             $(`#menu`).toggleClass("active")
@@ -84,12 +97,11 @@
         let data = JSON.parse(localStorage.getItem("email"))
         let x;
         let edit = document.querySelectorAll(".edit")
-        // getting profile
-        data.forEach((ele) => {
-            if (ele.email == email) {
-                x = ele.profile
-            }
-        });
+        // getting profile (data may be absent when entering directly as an admin)
+        if (data && email) {
+            data.forEach((ele) => { if (ele.email == email) { x = ele.profile } });
+        }
+        if (!x) { x = "./image/person-logo.png"; }
         changeProfile.src = `${x}`
 
         // admin data

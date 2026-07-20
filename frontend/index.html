@@ -155,6 +155,39 @@
     document.getElementById("burger").addEventListener("click", function () {
       document.getElementById("navLinks").classList.toggle("open");
     });
+
+    // Auth-aware navbar
+    (function () {
+      var lu = null;
+      try { lu = JSON.parse(localStorage.getItem("LoggedUser")); } catch (e) {}
+      var nav = document.getElementById("navLinks");
+      var LOGOUT_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+
+      if (lu && lu.id) {
+        var isAdmin = lu.role === "admin";
+        var name = lu.name || lu.email || "Account";
+        nav.innerHTML =
+          '<a href="#features">Features</a>' +
+          (isAdmin ? '<a href="./admin.html">Admin</a>' : "") +
+          '<a href="./masseges.html" class="btn btn-primary nav-cta">Open Messages</a>' +
+          '<div class="user-chip" id="userChip"><span class="uc-name"></span></div>' +
+          '<button class="btn-icon" id="navLogout" title="Log out" aria-label="Log out">' + LOGOUT_SVG + "</button>";
+        var chip = document.getElementById("userChip");
+        chip.querySelector(".uc-name").textContent = name;
+        chip.insertBefore(UI.avatar(name, { size: "sm", seed: lu.id }), chip.firstChild);
+        document.getElementById("navLogout").addEventListener("click", async function () {
+          try { await fetch("/user/logout"); } catch (e) {}
+          localStorage.removeItem("LoggedUser");
+          UI.toast("Logged out", { type: "success" });
+          setTimeout(function () { location.reload(); }, 500);
+        });
+      } else {
+        nav.innerHTML =
+          '<a href="#features">Features</a>' +
+          '<a href="./login.html">Log in</a>' +
+          '<a href="./signup.html" class="btn btn-primary nav-cta">Get started</a>';
+      }
+    })();
   </script>
 </body>
 

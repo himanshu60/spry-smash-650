@@ -141,12 +141,20 @@
        
     </section>
     <script>
+// Access guard (runs first): admin-role user or an admin session only.
+(function () {
+  try {
+    var lu = JSON.parse(localStorage.getItem("LoggedUser"));
+    if (!localStorage.getItem("e") && !(lu && lu.role === "admin")) { location.replace("./profile.html"); }
+  } catch (e) { location.replace("./profile.html"); }
+})();
+
         // toggle
         $(`#menu-btn`).click(function(){
             $(`#menu`).toggleClass("active")
         })
-// variables
 
+// variables
        let t= document.querySelector(".title")
        let changeProfile= document.getElementById("pro")
        let email = localStorage.getItem("e")
@@ -157,26 +165,29 @@
       let crdp= document.querySelector(".card-info>p")
        let editdata = JSON.parse(localStorage.getItem("see"))
        let work=document.getElementById("work")
+
+       // If no profile was selected (e.g. entered directly), go back to the dashboard.
+       if (!editdata) { location.replace("./admin.html"); }
+
        let github= document.querySelector(".fa-brands")
        github.addEventListener("click",()=>{
-        let x=editdata.contact.github
-        // location.replace(`${x}`)
-        self.location=`${x}`
+        let url = editdata && editdata.contact ? editdata.contact.github : "#";
+        self.location=`${url}`
        })
-// getting profile
-       data.forEach((ele) => {
-        if(ele.email==email){
-            x=ele.profile
-        }
-       });
+// getting profile (data may be absent when entering directly as an admin)
+       if (data && email) {
+         data.forEach((ele) => { if(ele.email==email){ x=ele.profile } });
+       }
+       if (!x) { x = "./image/person-logo.png"; }
        changeProfile.src=`${x}`
-    //    t.src=`${x}`
-//  sow data on card
-t.src=editdata.img
-inf.innerHTML=editdata.name
-crdp.innerHTML=`Email:- ${editdata.email}`
-infp.innerHTML=`Email:- ${editdata.email}`
-work.innerHTML=`Work:- ${editdata.work}`
+//  show data on card
+if (editdata) {
+  t.src=editdata.img
+  inf.innerHTML=editdata.name
+  crdp.innerHTML=`Email:- ${editdata.email}`
+  infp.innerHTML=`Email:- ${editdata.email}`
+  work.innerHTML=`Work:- ${editdata.work}`
+}
 
     </script>
 </body>
