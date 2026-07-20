@@ -1,8 +1,13 @@
 /* =====================================================================
    HangOut — chat page logic
-   Preserves the original socket contract:
-     emit "roomName" {roomid, id}  ·  emit "friend_msg"  ·  on "join"
-     on "display_friend_msg"       ·  (added) "typing" / "display_typing"
+   Socket model (both ends controlled here + Backend/index.js):
+     client -> "identify"   { userId }
+     client -> "send-dm"    { to, from, text, time }
+     client -> "set-typing" { to, from, typing }
+     server -> "recv-dm"    { to, from, text, time }
+     server -> "peer-typing"{ to, from, typing }
+     server -> "presence"   { userId, online }
+     server -> "presence-init" [userId, ...]
    Endpoints: GET /details/get, GET /user/logout
    Auth state: localStorage "LoggedUser" = { email, id }
    ===================================================================== */
@@ -36,11 +41,17 @@
   var meCard = $("#meCard");
   var scrim = $("#scrim");
 
+  /* -------- state -------- */
+  var users = [];
+  var currentPeer = null;
+  var onlineSet = new Set();          // userIds currently online
+  var threads = {};                   // peerId -> [ {text, mine, time} ]
+  var unread = {};                    // peerId -> count
+  var lastSender = null;
+
   /* -------- theme + basic wiring -------- */
   UI.mountThemeToggle("#themeToggle");
-
   $("#logo_msg").addEventListener("click", function () { location.href = "./index.html"; });
-
   $("#logoutBtn").addEventListener("click", async function () {
     try {
       await fetch("/user/logout", { method: "GET", headers: { "Content-Type": "application/json" } });
@@ -51,28 +62,43 @@
 
   /* -------- socket -------- */
   var socket = io({ transports: ["websocket"] });
-  var currentPeer = null;
-  var reconnecting = false;
 
-  socket.on("connect", function () {
-    if (currentPeer) socket.emit("roomName", { roomid: currentPeer._id, id: myId });
+  function identify() { socket.emit("identify", { userId: myId }); }
+  socket.on("connect", identify);
+  socket.io.on("reconnect", identify);
+
+  socket.on("presence-init", function (ids) {
+    onlineSet = new Set(ids);
+    refreshPresenceUI();
+  });
+  socket.on("presence", function (p) {
+    if (!p || !p.userId) return;
+    if (p.online) onlineSet.add(p.userId); else onlineSet.delete(p.userId);
+    setBlockPresence(p.userId, p.online);
+    if (currentPeer && currentPeer._id === p.userId) setPeerStatus(p.online);
   });
 
-  socket.on("display_friend_msg", function (data) {
-    hideTyping();
-    var text = typeof data === "string" ? data : (data && data.text) || "";
-    var time = (data && data.time) || Date.now();
-    appendMessage({ text: text, mine: false, time: time });
+  socket.on("recv-dm", function (msg) {
+    if (!msg || !msg.from) return;
+    var m = { text: msg.text || "", mine: false, time: msg.time || Date.now() };
+    pushThread(msg.from, m);
+    if (currentPeer && currentPeer._id === msg.from) {
+      hideTyping();
+      renderMessage(m);
+      if (isNearBottom()) scrollToBottom(true); else showScrollFab();
+      lastSender = "friend";
+    } else {
+      unread[msg.from] = (unread[msg.from] || 0) + 1;
+    }
+    updateBlock(msg.from, m.text, m.time);
   });
 
-  socket.on("display_typing", function (state) {
-    if (state && state.typing) showTyping(); else hideTyping();
+  socket.on("peer-typing", function (state) {
+    if (!state || !currentPeer || state.from !== currentPeer._id) return;
+    if (state.typing) showTyping(); else hideTyping();
   });
 
   /* -------- users / chat list -------- */
-  var users = [];
-  var lastMessages = {}; // peerId -> {text, time}
-
   function showSkeletons() {
     var html = "";
     for (var i = 0; i < 6; i++) {
@@ -93,15 +119,13 @@
       var res = await fetch("/details/get", { headers: { "Content-Type": "application/json" } });
       if (!res.ok) throw new Error("Failed to load");
       var all = await res.json();
-      // Exclude myself from the conversation list
       users = all.filter(function (u) { return String(u._id) !== String(myId); });
       renderChatList(users);
       renderMeCard(all);
     } catch (e) {
       chatlistEl.innerHTML =
         '<div class="empty-state"><h3>Couldn\'t load chats</h3><p>' +
-        UI.escapeHtml(e.message) +
-        '</p></div>';
+        UI.escapeHtml(e.message) + "</p></div>";
       UI.toast("Could not load conversations", { type: "error" });
     }
   }
@@ -133,17 +157,21 @@
       block.dataset.id = u._id;
       block.style.animationDelay = Math.min(i * 30, 300) + "ms";
 
-      var last = lastMessages[u._id];
+      var thread = threads[u._id];
+      var last = thread && thread.length ? thread[thread.length - 1] : null;
       var preview = last ? UI.escapeHtml(last.text) : "Tap to start chatting";
       var time = last ? formatTime(last.time) : "";
+      var online = onlineSet.has(u._id);
 
-      block.appendChild(UI.avatar(u.name, { seed: u._id, presence: "offline" }));
+      block.appendChild(UI.avatar(u.name, { seed: u._id, presence: online ? "online" : "offline" }));
       var details = document.createElement("div");
       details.className = "details";
+      var count = unread[u._id] || 0;
       details.innerHTML =
         '<div class="listHead"><h4>' + UI.escapeHtml(u.name) + "</h4>" +
         '<span class="time">' + time + "</span></div>" +
-        '<div class="preview">' + preview + "</div>";
+        '<div class="message_p"><p class="preview">' + preview + "</p>" +
+        (count ? '<b class="unread-badge">' + count + "</b>" : "") + "</div>";
       block.appendChild(details);
 
       block.addEventListener("click", function () { selectPeer(u); });
@@ -151,52 +179,60 @@
     });
   }
 
-  /* -------- select / join a conversation -------- */
+  /* -------- select / open a conversation -------- */
   function selectPeer(peer) {
     currentPeer = peer;
 
-    // highlight active
     Array.prototype.forEach.call(chatlistEl.querySelectorAll(".block"), function (b) {
       b.classList.toggle("active", b.dataset.id === peer._id);
     });
 
     // header
     peerEl.innerHTML = "";
-    peerEl.appendChild(UI.avatar(peer.name, { seed: peer._id, presence: "online" }));
+    peerEl.appendChild(UI.avatar(peer.name, { seed: peer._id, presence: onlineSet.has(peer._id) ? "online" : "offline" }));
     var info = document.createElement("div");
     info.className = "peer-info";
     info.innerHTML =
       '<div class="peer-name">' + UI.escapeHtml(peer.name) + "</div>" +
-      '<div class="peer-status online">Active now</div>';
+      '<div class="peer-status"></div>';
     peerEl.appendChild(info);
+    setPeerStatus(onlineSet.has(peer._id));
 
-    // swap panels + reset thread
+    // swap panels + render this thread
     chatEmpty.hidden = true;
     chatActive.hidden = false;
-    chatboxEl.innerHTML = '<div class="day-divider">Today</div>';
+    renderThread(peer._id);
     hideTyping();
     msgInput.focus();
 
-    // (re)join room on a fresh connection to avoid stacked backend listeners
-    if (socket.connected) {
-      reconnecting = true;
-      socket.disconnect();
-      socket.connect();
-    } else {
-      socket.connect();
+    // clear unread
+    if (unread[peer._id]) {
+      unread[peer._id] = 0;
+      var badge = chatlistEl.querySelector('.block[data-id="' + peer._id + '"] .unread-badge');
+      if (badge) badge.remove();
     }
 
     if (window.matchMedia("(max-width: 820px)").matches) closeSidebar();
   }
 
-  /* -------- messages -------- */
-  var lastSender = null;
+  function renderThread(peerId) {
+    chatboxEl.innerHTML = '<div class="day-divider">Today</div>';
+    lastSender = null;
+    var thread = threads[peerId] || [];
+    thread.forEach(function (m) { renderMessage(m); });
+    scrollToBottom(false);
+  }
 
-  function appendMessage(m) {
+  /* -------- messages -------- */
+  function pushThread(peerId, m) {
+    if (!threads[peerId]) threads[peerId] = [];
+    threads[peerId].push(m);
+  }
+
+  function renderMessage(m) {
     var wrap = document.createElement("div");
     wrap.className = "message " + (m.mine ? "my_msg" : "friend_msg");
 
-    // avatar for friend messages (hidden on consecutive to group)
     if (!m.mine) {
       var av = UI.avatar(currentPeer ? currentPeer.name : "?", {
         size: "sm", seed: currentPeer && currentPeer._id,
@@ -214,35 +250,37 @@
 
     var meta = document.createElement("div");
     meta.className = "meta";
-    meta.innerHTML = '<span>' + formatTime(m.time) + "</span>";
+    meta.innerHTML = "<span>" + formatTime(m.time) + "</span>";
     if (m.mine) {
       meta.innerHTML +=
         '<span class="ticks" title="Sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
     }
     bubble.appendChild(meta);
     wrap.appendChild(bubble);
-
-    var nearBottom = isNearBottom();
     chatboxEl.appendChild(wrap);
     lastSender = m.mine ? "me" : "friend";
-
-    // update sidebar preview
-    if (currentPeer) {
-      lastMessages[currentPeer._id] = { text: m.text, time: m.time };
-      updatePreview(currentPeer._id, m.text, m.time);
-    }
-
-    if (m.mine || nearBottom) scrollToBottom(true);
-    else showScrollFab();
   }
 
-  function updatePreview(peerId, text, time) {
+  function updateBlock(peerId, text, time) {
     var block = chatlistEl.querySelector('.block[data-id="' + peerId + '"]');
     if (!block) return;
     var p = block.querySelector(".preview");
     var t = block.querySelector(".time");
     if (p) p.textContent = text;
     if (t) t.textContent = formatTime(time);
+    // move to top for recency
+    chatlistEl.prepend(block);
+    // unread badge (only when not the open chat)
+    if (unread[peerId] && (!currentPeer || currentPeer._id !== peerId)) {
+      var mp = block.querySelector(".message_p");
+      var badge = block.querySelector(".unread-badge");
+      if (!badge && mp) {
+        badge = document.createElement("b");
+        badge.className = "unread-badge";
+        mp.appendChild(badge);
+      }
+      if (badge) badge.textContent = unread[peerId];
+    }
   }
 
   /* -------- send -------- */
@@ -250,8 +288,12 @@
     var text = msgInput.value.trim();
     if (!text || !currentPeer) return;
     var time = Date.now();
-    appendMessage({ text: text, mine: true, time: time });
-    socket.emit("friend_msg", { text: text, time: time });
+    var m = { text: text, mine: true, time: time };
+    pushThread(currentPeer._id, m);
+    renderMessage(m);
+    scrollToBottom(true);
+    socket.emit("send-dm", { to: currentPeer._id, from: myId, text: text, time: time });
+    updateBlock(currentPeer._id, text, time);
     msgInput.value = "";
     autoGrow();
     updateSendState();
@@ -261,10 +303,7 @@
 
   sendBtn.addEventListener("click", sendMessage);
   msgInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
 
   /* -------- textarea auto-grow + typing -------- */
@@ -277,7 +316,7 @@
   var typingTimer = null;
   var amTyping = false;
   function emitTyping(state) {
-    if (currentPeer) socket.emit("typing", { typing: state });
+    if (currentPeer) socket.emit("set-typing", { to: currentPeer._id, from: myId, typing: state });
   }
   function startTyping() {
     if (!amTyping) { amTyping = true; emitTyping(true); }
@@ -296,11 +335,29 @@
   });
 
   /* -------- typing indicator (incoming) -------- */
-  function showTyping() {
-    typingRow.hidden = false;
-    if (isNearBottom()) scrollToBottom(true);
-  }
+  function showTyping() { typingRow.hidden = false; if (isNearBottom()) scrollToBottom(true); }
   function hideTyping() { typingRow.hidden = true; }
+
+  /* -------- presence UI -------- */
+  function setPeerStatus(online) {
+    var el = peerEl.querySelector(".peer-status");
+    if (!el) return;
+    el.textContent = online ? "Active now" : "Offline";
+    el.classList.toggle("online", !!online);
+    var dot = peerEl.querySelector(".presence");
+    if (dot) dot.classList.toggle("online", !!online);
+  }
+  function setBlockPresence(userId, online) {
+    var dot = chatlistEl.querySelector('.block[data-id="' + userId + '"] .presence');
+    if (dot) dot.classList.toggle("online", !!online);
+  }
+  function refreshPresenceUI() {
+    Array.prototype.forEach.call(chatlistEl.querySelectorAll(".block"), function (b) {
+      var dot = b.querySelector(".presence");
+      if (dot) dot.classList.toggle("online", onlineSet.has(b.dataset.id));
+    });
+    if (currentPeer) setPeerStatus(onlineSet.has(currentPeer._id));
+  }
 
   /* -------- scroll handling -------- */
   function isNearBottom() {
@@ -312,7 +369,6 @@
   }
   function showScrollFab() { scrollFab.hidden = false; }
   function hideScrollFab() { scrollFab.hidden = true; }
-
   chatboxEl.addEventListener("scroll", function () {
     if (isNearBottom()) hideScrollFab(); else showScrollFab();
   });
@@ -321,9 +377,7 @@
   /* -------- search -------- */
   searchInput.addEventListener("input", function () {
     var q = searchInput.value.trim().toLowerCase();
-    renderChatList(
-      q ? users.filter(function (u) { return u.name.toLowerCase().indexOf(q) !== -1; }) : users
-    );
+    renderChatList(q ? users.filter(function (u) { return u.name.toLowerCase().indexOf(q) !== -1; }) : users);
     if (currentPeer) {
       var b = chatlistEl.querySelector('.block[data-id="' + currentPeer._id + '"]');
       if (b) b.classList.add("active");
@@ -335,22 +389,15 @@
   var emojiBtn = $("#emojiBtn");
   var emojiPanel = $("#emojiPanel");
   emojiPanel.innerHTML = EMOJIS.map(function (e) { return "<button type='button'>" + e + "</button>"; }).join("");
-  emojiBtn.addEventListener("click", function (e) {
-    e.stopPropagation();
-    emojiPanel.hidden = !emojiPanel.hidden;
-  });
+  emojiBtn.addEventListener("click", function (e) { e.stopPropagation(); emojiPanel.hidden = !emojiPanel.hidden; });
   emojiPanel.addEventListener("click", function (e) {
     if (e.target.tagName === "BUTTON") {
       msgInput.value += e.target.textContent;
-      autoGrow();
-      updateSendState();
-      msgInput.focus();
+      autoGrow(); updateSendState(); msgInput.focus();
     }
   });
   document.addEventListener("click", function (e) {
-    if (!emojiPanel.hidden && !emojiPanel.contains(e.target) && e.target !== emojiBtn) {
-      emojiPanel.hidden = true;
-    }
+    if (!emojiPanel.hidden && !emojiPanel.contains(e.target) && e.target !== emojiBtn) emojiPanel.hidden = true;
   });
 
   /* -------- mobile sidebar -------- */

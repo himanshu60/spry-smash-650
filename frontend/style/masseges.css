@@ -116,13 +116,36 @@ body { overflow: hidden; }
   text-overflow: ellipsis;
 }
 .block .listHead .time { font-size: var(--fs-xs); color: var(--text-3); flex-shrink: 0; }
+.block .message_p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-top: 2px;
+}
 .block .preview {
   font-size: var(--fs-sm);
   color: var(--text-3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.unread-badge {
+  flex-shrink: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-full);
+  background: var(--brand);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: pop-in var(--dur) var(--ease-out) both;
 }
 
 /* skeleton row */

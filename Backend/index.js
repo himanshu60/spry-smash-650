@@ -49,31 +49,53 @@ const io = new Server(server, {
 
 
 
+// Each user gets a personal room `user:<id>`. Direct messages are delivered to
+// the recipient's personal room, so they arrive whether or not the recipient
+// currently has that conversation open. Presence is tracked by counting live
+// sockets per user (a user may have several tabs open).
+const onlineUsers = new Map(); // userId -> Set<socketId>
+
 io.on("connection", (socket) => {
-  socket.on("roomName", (data) => {
-    console.log(data);
-    let roomName = data.roomid;
+  // Client announces who it is.
+  socket.on("identify", (data) => {
+    const userId = data && data.userId;
+    if (!userId) return;
+    socket.data.userId = userId;
+    socket.join(`user:${userId}`);
 
-    let users = [roomName, data.loggedUser];
-    socket.join(`${roomName}`);
-    console.log("room joined", roomName);
-    io.to(`${roomName}`).emit("join", users);
-    let x;
-    socket.on("friend_msg", (msg) => {
-      console.log(msg);
-      x = msg;
-      console.log(data.id);
-      // io.to(`${roomName}`).emit("display_friend_msg", msg);
-      socket.to(`${data.id}`).to(`${roomName}`).emit("display_friend_msg", x);
-    })
+    let set = onlineUsers.get(userId);
+    const wasOffline = !set || set.size === 0;
+    if (!set) { set = new Set(); onlineUsers.set(userId, set); }
+    set.add(socket.id);
 
-    // Typing indicator — relayed with the same routing as messages, so it is
-    // exactly as reliable as chat delivery for this room model.
-    socket.on("typing", (state) => {
-      socket.to(`${data.id}`).to(`${roomName}`).emit("display_typing", state);
-    });
-  })
+    // Tell this socket who is already online, then announce this user.
+    socket.emit("presence-init", [...onlineUsers.keys()]);
+    if (wasOffline) io.emit("presence", { userId, online: true });
+  });
 
+  // Direct message → deliver to the recipient's personal room.
+  socket.on("send-dm", (msg) => {
+    if (!msg || !msg.to) return;
+    socket.to(`user:${msg.to}`).emit("recv-dm", msg);
+  });
+
+  // Typing indicator → recipient only.
+  socket.on("set-typing", (state) => {
+    if (!state || !state.to) return;
+    socket.to(`user:${state.to}`).emit("peer-typing", state);
+  });
+
+  socket.on("disconnect", () => {
+    const userId = socket.data.userId;
+    if (!userId) return;
+    const set = onlineUsers.get(userId);
+    if (!set) return;
+    set.delete(socket.id);
+    if (set.size === 0) {
+      onlineUsers.delete(userId);
+      io.emit("presence", { userId, online: false });
+    }
+  });
 });
 
 
