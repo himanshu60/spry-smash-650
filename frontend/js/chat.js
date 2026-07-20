@@ -46,6 +46,7 @@
   var currentPeer = null;
   var onlineSet = new Set();          // userIds currently online
   var threads = {};                   // peerId -> [ {id, text, mine, time, status} ]
+  var loadedPeers = new Set();        // peers whose history has been fetched
   var unread = {};                    // peerId -> count
   var lastSender = null;
   var msgSeq = 0;
@@ -215,7 +216,32 @@
   }
 
   /* -------- select / open a conversation -------- */
-  function selectPeer(peer) {
+  async function loadHistory(peerId) {
+    if (loadedPeers.has(peerId)) return;
+    try {
+      var res = await fetch("/messages/" + encodeURIComponent(myId) + "/" + encodeURIComponent(peerId));
+      if (!res.ok) return;
+      var rows = await res.json();
+      var fetched = rows.map(function (r) {
+        var mine = String(r.from) === String(myId);
+        return {
+          id: r.cid || r._id,
+          text: r.text,
+          mine: mine,
+          time: r.time,
+          status: mine ? (r.read ? "read" : "delivered") : undefined,
+        };
+      });
+      // Merge with any in-memory messages not yet reflected in the DB fetch.
+      var seen = new Set(fetched.map(function (m) { return m.id; }));
+      (threads[peerId] || []).forEach(function (m) { if (!seen.has(m.id)) fetched.push(m); });
+      fetched.sort(function (a, b) { return a.time - b.time; });
+      threads[peerId] = fetched;
+      loadedPeers.add(peerId);
+    } catch (e) {}
+  }
+
+  async function selectPeer(peer) {
     currentPeer = peer;
 
     Array.prototype.forEach.call(chatlistEl.querySelectorAll(".block"), function (b) {
@@ -233,9 +259,12 @@
     peerEl.appendChild(info);
     setPeerStatus(onlineSet.has(peer._id));
 
-    // swap panels + render this thread
+    // swap panels + show loading, then render this thread
     chatEmpty.hidden = true;
     chatActive.hidden = false;
+    chatboxEl.innerHTML = '<div class="day-divider">Today</div>';
+    await loadHistory(peer._id);
+    if (currentPeer !== peer) return; // user switched away while loading
     renderThread(peer._id);
     hideTyping();
     msgInput.focus();

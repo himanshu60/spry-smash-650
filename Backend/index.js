@@ -9,6 +9,8 @@ const { authmiddleware } = require("./middleware/authenticate");
 // const { fbrouter } = require("./loginRoute/fb-oauthrout");
 const cookieParser = require("cookie-parser");
 const { detailUserRoute } = require("./routes/detailroute");
+const { messageRouter } = require("./routes/message.route");
+const { MessageModel } = require("./models/message.schema");
 const path = require("path");
 const app = express();
 
@@ -73,10 +75,17 @@ io.on("connection", (socket) => {
     if (wasOffline) io.emit("presence", { userId, online: true });
   });
 
-  // Direct message → deliver to the recipient's personal room.
+  // Direct message → persist, then deliver to the recipient's personal room.
   socket.on("send-dm", (msg) => {
-    if (!msg || !msg.to) return;
+    if (!msg || !msg.to || !msg.from) return;
     socket.to(`user:${msg.to}`).emit("recv-dm", msg);
+    MessageModel.create({
+      cid: msg.id,
+      from: msg.from,
+      to: msg.to,
+      text: msg.text,
+      time: msg.time || Date.now(),
+    }).catch((e) => console.log("msg save error:", e.message));
   });
 
   // Typing indicator → recipient only.
@@ -91,8 +100,13 @@ io.on("connection", (socket) => {
     socket.to(`user:${ack.to}`).emit("dm-delivered", ack);
   });
   socket.on("dm-read", (ack) => {
-    if (!ack || !ack.to) return;
+    if (!ack || !ack.to || !ack.from) return;
     socket.to(`user:${ack.to}`).emit("dm-read", ack);
+    // Persist read state: messages sent by ack.to → ack.from are now read.
+    MessageModel.updateMany(
+      { from: ack.to, to: ack.from, read: false },
+      { $set: { read: true } }
+    ).catch((e) => console.log("read update error:", e.message));
   });
 
   socket.on("disconnect", () => {
@@ -115,6 +129,7 @@ app.use("/user", userRouter);
 // app.use("/google", googlerouter);
 // app.use("/facebook", fbrouter);
 app.use("/details", detailUserRoute);
+app.use("/messages", messageRouter);
 
 const PORT = process.env.port || process.env.PORT || 8080;
 server.listen(PORT, async () => {

@@ -271,8 +271,8 @@ body { overflow: hidden; }
 .message .ticks { display: inline-flex; align-items: center; }
 .message .ticks svg { width: 15px; height: 15px; }
 .message .ticks.double svg { width: 20px; height: 15px; }
-.message .ticks.read { color: #6cc6ff; }
-.my_msg .ticks.read { color: #bfe6ff; }
+.message .ticks.read { color: #38bdf8; }
+.my_msg .ticks.read { color: #5ef2ff; filter: drop-shadow(0 0 3px rgba(94, 242, 255, 0.55)); }
 
 .msg-avatar { margin-bottom: 2px; }
 .msg-avatar.hidden { visibility: hidden; }
