@@ -4,7 +4,7 @@ const detailUserRoute = express.Router();
 const { UserModel } = require("../models/user.schema");
 
 detailUserRoute.get("/get", async (req, res) => {
-    let users = await UserModel.find();
+    let users = await UserModel.find().select("-password");
     res.send(users);
 })
 

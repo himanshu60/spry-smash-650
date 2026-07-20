@@ -75,7 +75,7 @@ userRouter.post("/login", async (req, res, next) => {
 userRouter.get("/get", async (req, res, next) => {
   // const payload = req.body;
   try {
-    const user = await UserModel.find()
+    const user = await UserModel.find().select("-password")
     res.send(user)
   } catch (error) {
     console.log(error);
