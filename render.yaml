@@ -1,0 +1,20 @@
+# Render Blueprint for HangOut
+# One Web Service runs the Express + Socket.io backend, which also serves the
+# static frontend (same-origin). Deploy: https://render.com → New → Blueprint,
+# point at this repo, then fill in the env vars marked `sync: false`.
+services:
+  - type: web
+    name: hangout
+    runtime: node
+    plan: free
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /index.html
+    envVars:
+      - key: mongoUrl
+        sync: false # set your MongoDB connection string in the dashboard
+      - key: key
+        sync: false # set a long random JWT secret in the dashboard
+      # - key: REDIS_URL   # optional; omit to use the in-memory token store
+      #   sync: false

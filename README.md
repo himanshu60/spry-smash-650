@@ -2,9 +2,50 @@
 
 Hangout is an online communication channel that allows you to conduct real-time conversations. It involves the transmission of live text messages from the sender to the recipient.
 
+A premium, modern chat experience with real-time messaging, dark & light themes, smooth animations, and a polished responsive UI.
 
+## Getting Started (Local)
 
-Deployed Link :https://64802391adddc43187b1cf49--lambent-trifle-ac5b1d.netlify.app/
+The Express backend serves both the API **and** the static frontend, so you only run one process.
+
+```bash
+cd Backend
+cp .env.example .env      # then fill in mongoUrl and key
+npm install
+npm run live              # or: npm start
+```
+
+Open **http://localhost:8080/index.html**
+
+Environment variables (see `Backend/.env.example`):
+
+| Var         | Required | Notes                                                        |
+|-------------|----------|--------------------------------------------------------------|
+| `mongoUrl`  | ✅       | MongoDB connection string                                    |
+| `key`       | ✅       | Secret used to sign JWT tokens                               |
+| `port`      | ➖       | Defaults to `8080` (platforms set this automatically)        |
+| `REDIS_URL` | ➖       | Optional. If omitted, an in-memory token store is used       |
+
+> **Redis is optional.** The original hardcoded Redis instance is dead, so the
+> app falls back to an in-memory token store (fine for a single instance).
+> Provide `REDIS_URL` to use real Redis.
+
+## Deployment (Render)
+
+Socket.io needs a long-running server, so a persistent host (Render/Railway) is
+the right fit — not serverless (Vercel/Netlify).
+
+1. Push this repo to GitHub.
+2. On [Render](https://render.com): **New → Blueprint**, select this repo — it
+   reads `render.yaml` automatically. (Or **New → Web Service** with root
+   directory `Backend`, build `npm install`, start `npm start`.)
+3. Add the environment variables `mongoUrl` and `key` in the dashboard.
+4. Deploy. The frontend is served from the same URL.
+
+> ⚠️ **Security:** the credentials that were previously committed in
+> `Backend/.env` should be rotated. `.env` is now git-ignored.
+
+---
 
 
 

@@ -5,74 +5,136 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup</title>
-  <link rel="stylesheet" href="./style/signup.css" />
+  <title>Sign up · HangOut</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style/theme.css" />
+  <link rel="stylesheet" href="./style/auth.css" />
+  <script>
+    (function () { try { var t = localStorage.getItem('hangout-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) { } })();
+  </script>
 </head>
 
 <body>
-  <div id="nav">
-    <a href="./index.html"> <img src="./image/Hangout copy.jpg" alt=""></a>
-    <!-- <div class="left">
-          <a href="">
-              <p>Messages Dashboard</p>
-          </a>
-          <a href="./login.html">
-              <p>Login</p>
-          </a>
-          <a href="./signup.html">
-              <p>Signup</p>
-          </a> -->
+  <div class="auth">
+    <!-- Showcase -->
+    <aside class="auth-aside">
+      <a href="./index.html" class="brand" style="color:#fff">
+        <span class="brand-mark">H</span> HangOut
+      </a>
+      <div class="auth-hero">
+        <h1>Join the conversation today.</h1>
+        <p>Create your free account and start messaging in real time — it takes seconds.</p>
+      </div>
+      <div class="auth-features">
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Free forever for personal chats</div>
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Works on desktop, tablet &amp; mobile</div>
+        <div class="feat"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> No downloads, no clutter</div>
+      </div>
+    </aside>
 
+    <!-- Form -->
+    <main class="auth-main">
+      <div class="auth-topbar">
+        <button class="theme-toggle" id="themeToggle"></button>
+      </div>
+
+      <div class="auth-card">
+        <a href="./index.html" class="mini-brand"><span class="brand-mark">H</span> HangOut</a>
+        <h2>Create account</h2>
+        <p class="sub">Start chatting in real time in under a minute.</p>
+
+        <form class="auth-form" id="signupForm" novalidate>
+          <div class="auth-error" id="err">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errText"></span>
+          </div>
+
+          <div class="field">
+            <label for="name">Full name</label>
+            <div class="input-icon">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <input class="input" type="text" id="name" placeholder="Jane Doe" autocomplete="name" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <div class="input-icon">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></span>
+              <input class="input" type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-icon">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input class="input" type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required />
+              <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="signup" type="submit">Create account</button>
+        </form>
+
+        <p class="auth-alt">Already have an account? <a href="./login.html">Log in</a></p>
+      </div>
+    </main>
   </div>
-  <div id="container">
-    <div id="left">
-      <h1>Sign up</h1>
-      <!-- <form action=""> -->
-      <label for="name">Name</label><br />
-      <input type="text" id="name" /><br /><br />
-      <label for="email">Email</label><br />
-      <input type="email" id="email" /><br /><br />
-      <label for="password">Password</label><br />
-      <input type="password" id="password" /><br /><br />
-      <button id="signup">Sign Up</button>
-      <!-- </form> -->
-    </div>
-    <div id="right">
-      <img src="https://workdesk.netlify.app/routes/loginsignup/images/signup-image.jpg" alt="" />
-      <p><a href="./login.html">I am already member</a></p>
-    </div>
-  </div>
+
+  <script src="./js/ui.js"></script>
+  <script>
+    UI.mountThemeToggle("#themeToggle");
+
+    var form = document.getElementById("signupForm");
+    var btn = document.getElementById("signup");
+    var errBox = document.getElementById("err");
+    var errText = document.getElementById("errText");
+
+    function showError(msg) { errText.textContent = msg; errBox.classList.add("show"); }
+
+    document.getElementById("togglePw").addEventListener("click", function () {
+      var pw = document.getElementById("password");
+      pw.type = pw.type === "password" ? "text" : "password";
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      errBox.classList.remove("show");
+      var name = document.getElementById("name").value.trim();
+      var email = document.getElementById("email").value.trim();
+      var password = document.getElementById("password").value;
+      if (!name || !email || !password) { showError("Please fill in all fields."); return; }
+      if (password.length < 6) { showError("Password must be at least 6 characters."); return; }
+      sgnup({ name: name, email: email, password: password });
+    });
+
+    async function sgnup(data) {
+      btn.classList.add("loading");
+      try {
+        var res = await fetch("/user/signup", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-type": "application/json" },
+        });
+        if (res.ok) {
+          UI.toast("Account created! Please log in.", { type: "success" });
+          setTimeout(function () { location.href = "./login.html"; }, 800);
+        } else {
+          var body = await res.json().catch(function () { return {}; });
+          showError(body.msg || body.err || "Could not create account. Try a different email.");
+          btn.classList.remove("loading");
+        }
+      } catch (err) {
+        showError("Network error — is the server running?");
+        btn.classList.remove("loading");
+      }
+    }
+  </script>
 </body>
 
 </html>
-<!-- <script src="./scripts/signup.js"></script> -->
-<script>
-  let btn = document.getElementById("signup");
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    let obj = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
-    };
-    sgnup(obj);
-  });
-
-  async function sgnup(data) {
-    //  console.log(data)
-    try {
-      let res = await fetch("https://hangout-backend.onrender.com/user/signup", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-type": "application/json" },
-      });
-
-      if (res.ok) {
-        let X = res.json();
-        window.location.href = "./index.html"
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-</script>

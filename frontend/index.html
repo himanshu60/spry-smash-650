@@ -5,103 +5,190 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hangout</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <title>HangOut · Real-time messaging, reimagined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style/theme.css" />
   <link rel="stylesheet" href="./style/index.css" />
+  <script>
+    (function () { try { var t = localStorage.getItem('hangout-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) { } })();
+  </script>
 </head>
 
 <body>
-
-  <!-- navbar -->
-  <header>
-
-    <a href="./index.html" class="logo"><img src="./image/Hangout copy.jpg" alt=""></a>
-    <nav class="navbar">
-
-      <a href="./signup.html" class="active">Messages Dashboard</a>
+  <!-- Navbar -->
+  <header class="nav glass">
+    <a href="./index.html" class="brand">
+      <span class="brand-mark">H</span>
+      <span class="brand-name">HangOut</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="./login.html">Log in</a>
       <a href="./profile.html">Admin</a>
-      <a href="./login.html">LogIn</a>
-      <a href="./signup.html">SignUp</a>
-
+      <a href="./signup.html" class="btn btn-primary nav-cta">Get started</a>
     </nav>
-
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle"></button>
+      <button class="btn-icon nav-burger" id="burger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
   </header>
-  <div class="burger">
-    <span onclick="opennav()" class="line">&#9776;</span>
-    <!-- <img src="./image/Hangout copy.jpg" alt="logo"> -->
-  </div>
-  <div class="sidenav">
-    <div class="sidenav1">
-      <span onclick="closenav()">&#9776;</span>
-      <img src="./image/Hangout copy.jpg" alt="logo">
-    </div>
 
-    <a href="./index.html" class="placeicon">&#xf015; <span class="text">Home</span></a>
-    <a href="./login.html" class="placeicon">&#xf0ca;<span class="text">Message Dashboard</span> </a>
-    <a href="./profile.html" class="placeicon">&#xf0b1; <span class="text">Admin</span></a>
-    <a href="./signup.html" class="placeicon">&#xf039;<span class="text">Signup</span> </a>
-    <a href="./login.html" class="placeicon">&#xf2f6;<span class="text">Login</span></a>
-
-
-  </div>
-  <div id="first">
-    <div id="left">
-      <h1>Hangout</h1>
-      <h2>
-        Access and device at any time. Form anywhere. Always secure and fast.
-      </h2>
-      <p>
-        Hangout Meetings is a proprietary messaging software program developed
-        by Hangout Message Communications. The free plan allows up to 100
-        concurrent participants, with a 40-minute time restriction. Users have
-        the option to upgrade by subscribing to a paid plan.
+  <!-- Hero -->
+  <main class="hero">
+    <div class="hero-inner">
+      <span class="pill anim-fade-up">✨ Now with a brand-new premium interface</span>
+      <h1 class="anim-fade-up" style="animation-delay:.05s">
+        Real-time messaging,<br /><span class="grad">beautifully reimagined.</span>
+      </h1>
+      <p class="hero-sub anim-fade-up" style="animation-delay:.1s">
+        HangOut lets you have live conversations with anyone, instantly. Fast, secure,
+        and gorgeous on every device — with dark mode, of course.
       </p>
-      <a href="./signup.html"> <button>Create an Account</button></a>
+      <div class="hero-cta anim-fade-up" style="animation-delay:.15s">
+        <a href="./signup.html" class="btn btn-primary">Create free account</a>
+        <a href="./login.html" class="btn btn-ghost">I already have one</a>
+      </div>
+      <div class="hero-preview anim-scale-in" style="animation-delay:.2s">
+        <div class="preview-window card">
+          <div class="preview-bar">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="preview-body">
+            <div class="p-side">
+              <div class="p-search"></div>
+              <div class="p-row on"><div class="p-av" style="--c:#f472b6"></div><div class="p-lines"><i></i><i class="short"></i></div></div>
+              <div class="p-row"><div class="p-av" style="--c:#38bdf8"></div><div class="p-lines"><i></i><i class="short"></i></div></div>
+              <div class="p-row"><div class="p-av" style="--c:#34d399"></div><div class="p-lines"><i></i><i class="short"></i></div></div>
+              <div class="p-row"><div class="p-av" style="--c:#fbbf24"></div><div class="p-lines"><i></i><i class="short"></i></div></div>
+            </div>
+            <div class="p-main">
+              <div class="p-bubble them">Hey! Have you seen the new HangOut?</div>
+              <div class="p-bubble me">Just logged in — this looks incredible 🔥</div>
+              <div class="p-bubble them">Right? Dark mode is 👌</div>
+              <div class="p-bubble me">Sending you a message now…</div>
+              <div class="p-typing"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="right">
-      <img src="https://workdesk.netlify.app/resourses/homepage.PNG" alt="" />
-    </div>
-  </div>
-  <footer>
+  </main>
 
-    <div class="left">
-      <img src="./image/Hangout copy.jpg" alt="" />
-      <h1>Hangout</h1>
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="section-head">
+      <h2>Everything you need to stay connected</h2>
+      <p>Thoughtfully designed, blazing fast, and a joy to use.</p>
     </div>
-    <div class="right">
-      <h1>Contributors</h1>
-      <ul>
-        <li>Saloni</li>
-        <li>Himanshu</li>
-        <li>Rahul Sharma</li>
-        <li>Yuvraj</li>
-      </ul>
+    <div class="feature-grid">
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>Instant delivery</h3>
+        <p>Messages travel over WebSockets and arrive the moment you hit send.</p>
+      </article>
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Secure by design</h3>
+        <p>Passwords are hashed with bcrypt and sessions use signed JWT tokens.</p>
+      </article>
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h3>Any device</h3>
+        <p>A fully responsive experience that feels native on desktop, tablet and phone.</p>
+      </article>
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+        <h3>Dark &amp; light</h3>
+        <p>Switch themes instantly, or let HangOut follow your system preference.</p>
+      </article>
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+        <h3>Emoji &amp; more</h3>
+        <p>Express yourself with emoji, typing indicators and smooth micro-interactions.</p>
+      </article>
+      <article class="feature card">
+        <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Always live</h3>
+        <p>See who's active with real-time presence and animated online status.</p>
+      </article>
     </div>
-    <div class="right">
-      <h1>Tech Stack</h1>
-      <ul>
-        <li>HTML/CSS</li>
-        <li>JavaScript</li>
-        <li>Nodejs</li>
-        <li>Express</li>
-        <li>MongoDB</li>
-        <li>Socket</li>
-        <li>Redis</li>
-        <li>Authentication</li>
-      </ul>
+  </section>
 
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="cta-inner card glass">
+      <h2>Ready to start chatting?</h2>
+      <p>Create your free account and be online in seconds.</p>
+      <a href="./signup.html" class="btn btn-primary">Get started — it's free</a>
     </div>
+  </section>
 
+  <!-- Footer -->
+  <footer class="foot">
+    <div class="foot-brand">
+      <a href="./index.html" class="brand"><span class="brand-mark">H</span><span class="brand-name">HangOut</span></a>
+      <p>Real-time messaging, reimagined.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="./signup.html">Sign up</a>
+      <a href="./login.html">Log in</a>
+    </div>
+    <div class="foot-col">
+      <h4>Team</h4>
+      <span>Saloni</span><span>Himanshu</span><span>Rahul Sharma</span><span>Yuvraj</span>
+    </div>
+    <div class="foot-col">
+      <h4>Built with</h4>
+      <span>Node.js &amp; Express</span><span>Socket.io</span><span>MongoDB</span><span>Vanilla JS</span>
+    </div>
   </footer>
-</body>
-<script>
-  let opennav = () => {
-    document.querySelector(".sidenav").style.width = "250px";
-  }
-  let closenav = () => {
-    document.querySelector(".sidenav").style.width = "0px";
-  }
 
-</script>
+  <script src="./js/ui.js"></script>
+  <script>
+    UI.mountThemeToggle("#themeToggle");
+    document.getElementById("burger").addEventListener("click", function () {
+      document.getElementById("navLinks").classList.toggle("open");
+    });
+
+    // Auth-aware navbar
+    (function () {
+      var lu = null;
+      try { lu = JSON.parse(localStorage.getItem("LoggedUser")); } catch (e) {}
+      var nav = document.getElementById("navLinks");
+      var LOGOUT_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+
+      if (lu && lu.id) {
+        var isAdmin = lu.role === "admin";
+        var name = lu.name || lu.email || "Account";
+        nav.innerHTML =
+          '<a href="#features">Features</a>' +
+          (isAdmin ? '<a href="./admin.html">Admin</a>' : "") +
+          '<a href="./masseges.html" class="btn btn-primary nav-cta">Open Messages</a>' +
+          '<div class="user-chip" id="userChip"><span class="uc-name"></span></div>' +
+          '<button class="btn-icon" id="navLogout" title="Log out" aria-label="Log out">' + LOGOUT_SVG + "</button>";
+        var chip = document.getElementById("userChip");
+        chip.querySelector(".uc-name").textContent = name;
+        chip.insertBefore(UI.avatar(name, { size: "sm", seed: lu.id }), chip.firstChild);
+        document.getElementById("navLogout").addEventListener("click", async function () {
+          try { await fetch("/user/logout"); } catch (e) {}
+          localStorage.removeItem("LoggedUser");
+          UI.toast("Logged out", { type: "success" });
+          setTimeout(function () { location.reload(); }, 500);
+        });
+      } else {
+        nav.innerHTML =
+          '<a href="#features">Features</a>' +
+          '<a href="./login.html">Log in</a>' +
+          '<a href="./signup.html" class="btn btn-primary nav-cta">Get started</a>';
+      }
+    })();
+  </script>
+</body>
 
 </html>

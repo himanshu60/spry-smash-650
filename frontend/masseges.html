@@ -2,756 +2,119 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp UI Clone</title>
-  <!-- <link rel="stylesheet" href="./style/masseges.css"> -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-
-    }
-
-    .container {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      height: calc(100vh - 40px);
-      background: white;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.06);
-      display: flex;
-    }
-
-    .container .leftSide {
-      position: relative;
-      flex: 30%;
-      background: white;
-      border-right: 1px solid rgba(0, 0, 0, 0.2);
-    }
-
-    .container .rightSide {
-      position: relative;
-      flex: 70%;
-      background: white;
-    }
-
-    .container .rightSide::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      /* background: url("images/pattern.png"); */
-      opacity: 0.06;
-    }
-
-    .header {
-      position: relative;
-      width: 100%;
-      height: 60px;
-      background: #ededed;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 15px;
-    }
-
-    .userimg {
-      position: relative;
-      width: 45px;
-      height: 45px;
-      overflow: hidden;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .nav_icons {
-      display: flex;
-    }
-
-    .nav_icons li {
-      display: flex;
-      list-style: none;
-      cursor: pointer;
-      color: #51585c;
-      font-size: 1.5em;
-      margin-left: 22px;
-    }
-
-    .search_chat {
-      position: relative;
-      width: 100%;
-      height: 50px;
-      background: #f6f6f6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0 15px;
-    }
-
-    .search_chat div {
-      width: 100%;
-    }
-
-    .search_chat div input {
-      width: 100%;
-      outline: none;
-      border: none;
-      background: #fff;
-      padding: 6px;
-      height: 38px;
-      border-radius: 30px;
-      font-size: 20px;
-      padding-left: 40px;
-    }
-
-    .search_chat div input::placeholder {
-      /* border: 5px solid red; */
-      color: #bbb;
-    }
-
-    .search_chat div ion-icon {
-      position: absolute;
-      left: 30px;
-      top: 14px;
-      font-size: 1.2em;
-    }
-
-    .chatlist {
-      /* border: 5px solid green; */
-      position: relative;
-      height: calc(100% - 110px);
-      overflow: auto;
-    }
-
-    .chatlist .block {
-      /* border: 2px solid yellow; */
-      position: relative;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-      cursor: pointer;
-    }
-
-    .chatlist .block.active {
-      background: #ebebeb;
-      /* border: 2px solid ; */
-    }
-
-    .chatlist .block:hover {
-      /* background: #f5f5f5; */
-      background: #94a1c6;
-      /* background: #8F8BE8; */
-    }
-
-    .chatlist .block .imgBox {
-      position: relative;
-      min-width: 45px;
-      height: 45px;
-      overflow: hidden;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    .chatlist .block .details {
-      position: relative;
-      width: 100%;
-    }
-
-    .chatlist .block .details .listHead {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 5px;
-    }
-
-    .chatlist .block .details .listHead h4 {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #111;
-    }
-
-    .chatlist .block .details .listHead .time {
-      font-size: 0.75em;
-      color: #aaa;
-    }
-
-    .chatlist .block .details .listHead .time {
-      color: #111;
-    }
-
-    .chatlist .block.unread .details .listHead .time {
-      /* color: #06d755; */
-      color: black;
-    }
-
-    .message_p {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .message_p b {
-      /* border: 2px solid blue; */
-      background: #8F8BE8;
-      color: #fff;
-      min-width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.75rem;
-    }
-
-    .message_p p {
-      color: gray;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      font-size: 0.9em;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .imgText {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .imgText h4 {
-      font-weight: 500;
-      line-height: 1.2em;
-      margin-left: 15px;
-    }
-
-    .imgText h4 span {
-      font-size: 0.8em;
-      color: #555;
-    }
-
-    /* CHAT BOX */
-    .chatbox {
-      background-image: url("https://cdn.dribbble.com/users/2058540/screenshots/8225138/media/af6d6d059328c6f2f9f6e7878c094c7e.gif");
-      background-repeat: no-repeat;
-      background-position: center;
-      position: relative;
-      width: 100%;
-      height: calc(100% - 120px);
-      padding: 50px;
-      overflow-y: auto;
-    }
-
-    .message {
-      position: relative;
-      display: flex;
-      width: 100%;
-      margin: 5px 0;
-    }
-
-    .message p {
-      /* border: 1px solid ; */
-      position: relative;
-      right: 0;
-      text-align: right;
-      max-width: 65%;
-      padding: 12px;
-      background: #dcf8c8;
-      border-radius: 10px;
-      font-size: 0.9em;
-    }
-
-    .message p::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: -12px;
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(135deg,
-          #8F8BE8 0%,
-          #8F8BE8 50%,
-          transparent 50%,
-          transparent);
-    }
-
-    .message p span {
-      /* border:2px solid pink; */
-      display: block;
-      margin-top: 5px;
-      font-size: 0.85em;
-      opacity: 0.5;
-    }
-
-    .my_msg {
-      /* border:2px solid cyan; */
-      justify-content: flex-end;
-
-    }
-
-    .my_msg p {
-      background-color: #8F8BE8;
-
-    }
-
-    .friend_msg {
-      justify-content: flex-start;
-    }
-
-    .friend_msg p {
-      /* border:2px solid orange; */
-      background: #8F8BE8;
-      /* color: #787986; */
-      text-align: left;
-    }
-
-    .message.friend_msg p::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -12px;
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(225deg,
-          #8F8BE8 0%,
-          #8F8BE8 50%,
-          transparent 50%,
-          transparent);
-    }
-
-    .chat_input {
-      position: relative;
-      width: 100%;
-      height: 60px;
-      background: #f0f0f0;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chat_input ion-icon {
-      cursor: pointer;
-      font-size: 1.8em;
-      color: #51585c;
-    }
-
-    .chat_input ion-icon:nth-child(1) {
-      margin-right: 15px;
-    }
-
-    .chat_input input {
-      position: relative;
-      width: 90%;
-      margin: 0 20px;
-      padding: 10px 20px;
-      border: none;
-      outline: none;
-      border-radius: 30px;
-      font-size: 1em;
-    }
-
-    #msg_send {
-
-      cursor: pointer;
-      outline: 0;
-      display: inline-block;
-      font-weight: 400;
-      line-height: 1.5;
-      text-align: center;
-      background-color: transparent;
-      border: 1px solid transparent;
-      padding: 6px 12px;
-      font-size: 1rem;
-      border-radius: .25rem;
-      transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-      color: #4f4aae;
-      border-color: #4f4aae;
-    }
-
-    #msg_send:hover {
-      color: #fff;
-      background-color: #4f4aae;
-      border-color: #4f4aae;
-    }
-
-    .header_right button {
-      cursor: pointer;
-      outline: 0;
-      display: inline-block;
-      font-weight: 400;
-      line-height: 1.5;
-      text-align: center;
-      background-color: transparent;
-      border: 1px solid transparent;
-      padding: 6px 12px;
-      font-size: 1rem;
-      border-radius: .25rem;
-      transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-      color: #4f4aae;
-      border-color: #4f4aae;
-    }
-
-    .header_right button:hover {
-      color: #fff;
-      background-color: #4f4aae;
-      border-color: #4f4aae;
-    }
-
-    /* media query */
-    @media (max-width: 1480px) {
-      .container {
-        position: relative;
-        width: 1480px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-      }
-    }
-
-    @media (max-width: 1100px) {
-      .container {
-        position: relative;
-        width: 1100px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-      }
-
-    }
-
-    @media (max-width: 920px) {
-      .container {
-        position: relative;
-        width: 920px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-      }
-
-    }
-
-    @media (max-width: 840px) {
-      .container {
-        position: relative;
-        width: 840px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-
-      }
-
-      .message p {
-        /* border: 1px solid ; */
-        text-align: right;
-        max-width: 50%;
-        padding: 12px;
-        font-size: 0.9em;
-      }
-
-    }
-
-    @media (max-width: 520px) {
-      .container {
-        position: relative;
-        width: 520px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-
-      }
-
-      .message p {
-        /* border: 1px solid ; */
-        text-align: right;
-        max-width: 50%;
-        padding: 12px;
-        font-size: 0.6em;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .container {
-        position: relative;
-        width: 360px;
-        max-width: 100%;
-        height: calc(100vh - 40px);
-
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b10" />
+  <title>HangOut · Messages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style/theme.css" />
+  <link rel="stylesheet" href="./style/masseges.css" />
+  <script>
+    (function () { try { var t = localStorage.getItem('hangout-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) { } })();
+  </script>
 </head>
 
 <body>
-  <div class="container">
-    <div class="leftSide">
-      <!-- Header -->
-      <div class="header">
-        <div class="userimg">
-          <img
-            src="https://user-images.githubusercontent.com/40212890/229306231-b4cd8962-c364-42a2-acfe-3ff0eb0e00da.jpg"
-            id="logo_msg" alt="" class="cover">
+  <div class="app" id="app">
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+      <header class="sidebar-head glass">
+        <div class="brand" id="logo_msg" title="Home">
+          <span class="brand-mark">H</span>
+          <span class="brand-name">HangOut</span>
         </div>
-        <!-- <ul class="nav_icons">
-                    <li><ion-icon name="scan-circle-outline"></ion-icon></li>
-                    <li><ion-icon name="chatbox"></ion-icon></li>
-                    <li><ion-icon name="ellipsis-vertical"></ion-icon></li>
-                </ul> -->
+        <div class="sidebar-actions">
+          <button class="btn-icon" id="soundBtn" title="Sound" aria-label="Toggle notification sound"></button>
+          <button class="theme-toggle" id="themeToggle"></button>
+          <button class="btn-icon" id="logoutBtn" title="Log out" aria-label="Log out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="search-wrap">
+        <span class="search-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input class="input search-input" id="searchInput" type="text" placeholder="Search conversations" autocomplete="off" />
       </div>
-      <!-- Search Chat -->
-      <!-- <div class="search_chat">
-        <div>
-          <input type="text" placeholder="Search or start new chat">
-          <ion-icon name="search-outline"></ion-icon>
-        </div>
-      </div> -->
-      <!-- CHAT LIST -->
-      <div class="chatlist">
-        <div class="block active">
-          <!-- <div class="imgBox">
-                        <img src="images/img1.jpg" class="cover" alt="">
-                    </div> -->
-          <div class="details">
-            <div class="listHead">
-              <h4>Rahul</h4>
 
-            </div>
-            <div class="message_p">
+      <div class="chatlist" id="chatlist" role="list" aria-label="Conversations">
+        <!-- skeletons injected, then chat items -->
+      </div>
 
-            </div>
+      <footer class="sidebar-foot" id="meCard"></footer>
+    </aside>
+
+    <!-- ===================== CHAT ===================== -->
+    <main class="chat" id="chat">
+      <!-- Empty (no conversation selected) -->
+      <section class="chat-empty" id="chatEmpty">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
+          <h3>Your messages</h3>
+          <p>Select a conversation from the left to start chatting in real time.</p>
         </div>
+      </section>
 
-        <div class="block unread">
-          <!-- <div class="imgBox">
-                        <img src="images/img2.jpg" class="cover" alt="">
-                    </div> -->
-          <div class="details">
-            <div class="listHead">
-              <h4>Himanshu</h4>
-
-            </div>
-            <div class="message_p">
-            </div>
+      <!-- Active conversation -->
+      <section class="chat-active" id="chatActive" hidden>
+        <header class="chat-head glass">
+          <button class="btn-icon back-btn" id="backBtn" aria-label="Back to conversations">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="peer" id="peer"></div>
+          <div class="chat-head-actions">
+            <button class="btn-icon" title="Voice call" aria-label="Voice call">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </button>
+            <button class="btn-icon" title="Video call" aria-label="Video call">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </button>
           </div>
+        </header>
+
+        <div class="chatbox" id="chatbox">
+          <!-- messages injected -->
         </div>
 
-      </div>
-    </div>
-    <div class="rightSide">
-      <div class="header">
-
-        <div class="imgText">
-          <!-- <div class="userimg">
-                        <img src="images/img1.jpg" alt="" class="cover">
-                    </div> -->
-          <h4 class="userName">Yuvraj </h4>
-        </div>
-        <div class="header_right">
-          <button>Logout</button>
+        <!-- typing indicator -->
+        <div class="typing-row" id="typingRow" hidden>
+          <div class="typing-bubble"><span></span><span></span><span></span></div>
         </div>
 
-      </div>
+        <!-- scroll to bottom -->
+        <button class="scroll-fab" id="scrollFab" hidden aria-label="Scroll to latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
 
-      <!-- CHAT-BOX -->
-      <div class="chatbox">
+        <!-- composer -->
+        <footer class="composer">
+          <div class="emoji-wrap">
+            <button class="btn-icon" id="emojiBtn" title="Emoji" aria-label="Insert emoji">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </button>
+            <div class="emoji-panel card" id="emojiPanel" hidden></div>
+          </div>
+          <textarea class="msg composer-input" id="msgInput" rows="1" placeholder="Type a message…" autocomplete="off"></textarea>
+          <button class="send-btn" id="msg_send" aria-label="Send message" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </footer>
+      </section>
+    </main>
 
-        <!-- <div class="message my_msg">
-          <p>Hi <br><span>12:18</span></p>
-        </div>
-
-        <div class="message friend_msg">
-          <p>Hey <br><span>12:18</span></p>
-        </div>
-
-        <div class="message my_msg">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. <br><span>12:15</span></p>
-
-        </div>
-
-        <div class="message friend_msg">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. <br><span>12:15</span></p>
-
-        </div> -->
-
-
-      </div>
-
-      <!-- CHAT INPUT -->
-      <div class="chat_input">
-        <!-- <ion-icon name="happy-outline"></ion-icon> -->
-        <!-- <ion-icon name="happy-outline"></ion-icon> -->
-        <input class="msg" type="text" placeholder="Type a message">
-        <button id="msg_send">Send</button>
-        <!-- <ion-icon name="mic"></ion-icon> -->
-      </div>
-    </div>
+    <div class="sidebar-scrim" id="scrim" hidden></div>
   </div>
-  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
-    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
-    crossorigin="anonymous"></script>
 
-  <script>
-
-    let i = document.querySelector("#logo_msg");
-    i.addEventListener("click", () => {
-      window.location.href = "./index.html";
-    })
-    let socket = io("https://hangout-backend.onrender.com", {
-      transports: ["websocket"]
-    });
-
-    let logout_btn = document.querySelector(".header_right button");
-    logout_btn.addEventListener("click", async () => {
-      let url = "https://hangout-backend.onrender.com/user/logout";
-      let res = await fetch(url, {
-        method: "GET",
-        headers:
-        {
-          "Content-Type": "application/json"
-        }
-      })
-      if (res.ok) {
-        let r = res.json();
-        console.log(r);
-        window.location.href = "./login.html"
-      }
-
-    })
-
-    let loggedUser = JSON.parse(localStorage.getItem("LoggedUser"));
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const lid = urlParams.get("id");
-
-    console.log(lid)
-    let id;
-    if (lid != null) {
-      id = lid;
-    }
-    else {
-      id = loggedUser.id;
-
-    }
-    // let email = loggedUser.email;
-    let roomcount = 0;
-    let url = "https://hangout-backend.onrender.com/details/get";
-    const users = async () => {
-      let res = await fetch(url, {
-        method: "GET",
-        headers:
-        {
-          "Content-Type": "application/json"
-        }
-      })
-      if (res.ok) {
-        let arr = await res.json();
-        display(arr);
-        let chatlists = document.querySelectorAll(".block");
-
-        chatlists.forEach((item) => {
-
-          item.addEventListener("click", (event) => {
-            event.preventDefault();
-            console.log(event.target);
-            let z = event.target.classList.value;
-
-            let a = z.split(" ");
-
-            let roomid = a[a.length - 1];
-            if (roomcount < 1) {
-              socket.emit("roomName", { roomid, id });
-              roomcount++;
-            }
-            else {
-              roomcount = 0;
-              alert("Please login again!");
-              window.location = "./login.html";
-            }
-          });
-        });
-
-        socket.on("join", (data) => {
-          console.log("join", data);
-          document.querySelector(".chatbox").innerHTML = "";
-          let name;
-          for (let i = 0; i < arr.length; i++) {
-
-
-            if (arr[i]._id == data[0]) {
-
-              name = arr[i].name;
-            }
-
-          }
-          document.querySelector(".userName").innerHTML = name;
-
-        });
-
-      }
-
-      document.querySelector("#msg_send").addEventListener("click", () => {
-        let msg = document.querySelector(".msg").value;
-        let d = document.createElement("div")
-        d.classList.add("message", "my_msg");
-        let p = document.createElement("p");
-        p.textContent = msg;
-        d.append(p);
-        document.querySelector(".chatbox").append(d);
-        socket.emit("friend_msg", msg);
-      })
-    }
-    socket.on("display_friend_msg", (data) => {
-      console.log(data);
-      let d = document.createElement("div")
-      d.classList.add("message", "friend_msg");
-      let p = document.createElement("p");
-      p.textContent = data;
-      d.append(p);
-      document.querySelector(".chatbox").append(d);
-
-    })
-    users();
-
-    const display = (user) => {
-
-      let usr = document.querySelector(".chatlist");
-      let arr = "";
-      for (let x of user) {
-        arr += `<div class="block active ${x._id}" > 
-     <div class="details ${x._id}" >
-    <div class="listHead ${x._id}" >
-        <h4 class="${x._id}">${x.name}</h4>
-    </div>
-</div>
-</div>`;
-      }
-
-      usr.innerHTML = arr;
-    }
-
-
-  </script>
-
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/chat.js"></script>
 </body>
 
 </html>

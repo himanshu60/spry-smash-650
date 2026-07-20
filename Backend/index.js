@@ -9,6 +9,9 @@ const { authmiddleware } = require("./middleware/authenticate");
 // const { fbrouter } = require("./loginRoute/fb-oauthrout");
 const cookieParser = require("cookie-parser");
 const { detailUserRoute } = require("./routes/detailroute");
+const { messageRouter } = require("./routes/message.route");
+const { MessageModel } = require("./models/message.schema");
+const path = require("path");
 const app = express();
 
 
@@ -17,6 +20,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: "*" }));
+
+// Serve the static frontend from the backend so the whole app runs as a single
+// same-origin service (no CORS/cookie issues, one deploy target).
+app.use(express.static(path.join(__dirname, "../frontend")));
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   next();
@@ -38,29 +45,81 @@ app.use(cors({ origin: "*" }));
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
 
 
+
+// Each user gets a personal room `user:<id>`. Direct messages are delivered to
+// the recipient's personal room, so they arrive whether or not the recipient
+// currently has that conversation open. Presence is tracked by counting live
+// sockets per user (a user may have several tabs open).
+const onlineUsers = new Map(); // userId -> Set<socketId>
 
 io.on("connection", (socket) => {
-  socket.on("roomName", (data) => {
-    console.log(data);
-    let roomName = data.roomid;
+  // Client announces who it is.
+  socket.on("identify", (data) => {
+    const userId = data && data.userId;
+    if (!userId) return;
+    socket.data.userId = userId;
+    socket.join(`user:${userId}`);
 
-    let users = [roomName, data.loggedUser];
-    socket.join(`${roomName}`);
-    console.log("room joined", roomName);
-    io.to(`${roomName}`).emit("join", users);
-    let x;
-    socket.on("friend_msg", (msg) => {
-      console.log(msg);
-      x = msg;
-      console.log(data.id);
-      // io.to(`${roomName}`).emit("display_friend_msg", msg);
-      socket.to(`${data.id}`).to(`${roomName}`).emit("display_friend_msg", x);
-    })
-  })
+    let set = onlineUsers.get(userId);
+    const wasOffline = !set || set.size === 0;
+    if (!set) { set = new Set(); onlineUsers.set(userId, set); }
+    set.add(socket.id);
 
+    // Tell this socket who is already online, then announce this user.
+    socket.emit("presence-init", [...onlineUsers.keys()]);
+    if (wasOffline) io.emit("presence", { userId, online: true });
+  });
+
+  // Direct message → persist, then deliver to the recipient's personal room.
+  socket.on("send-dm", (msg) => {
+    if (!msg || !msg.to || !msg.from) return;
+    socket.to(`user:${msg.to}`).emit("recv-dm", msg);
+    MessageModel.create({
+      cid: msg.id,
+      from: msg.from,
+      to: msg.to,
+      text: msg.text,
+      time: msg.time || Date.now(),
+    }).catch((e) => console.log("msg save error:", e.message));
+  });
+
+  // Typing indicator → recipient only.
+  socket.on("set-typing", (state) => {
+    if (!state || !state.to) return;
+    socket.to(`user:${state.to}`).emit("peer-typing", state);
+  });
+
+  // Delivery / read receipts → relayed back to the original sender.
+  socket.on("dm-delivered", (ack) => {
+    if (!ack || !ack.to) return;
+    socket.to(`user:${ack.to}`).emit("dm-delivered", ack);
+  });
+  socket.on("dm-read", (ack) => {
+    if (!ack || !ack.to || !ack.from) return;
+    socket.to(`user:${ack.to}`).emit("dm-read", ack);
+    // Persist read state: messages sent by ack.to → ack.from are now read.
+    MessageModel.updateMany(
+      { from: ack.to, to: ack.from, read: false },
+      { $set: { read: true } }
+    ).catch((e) => console.log("read update error:", e.message));
+  });
+
+  socket.on("disconnect", () => {
+    const userId = socket.data.userId;
+    if (!userId) return;
+    const set = onlineUsers.get(userId);
+    if (!set) return;
+    set.delete(socket.id);
+    if (set.size === 0) {
+      onlineUsers.delete(userId);
+      io.emit("presence", { userId, online: false });
+    }
+  });
 });
 
 
@@ -70,11 +129,13 @@ app.use("/user", userRouter);
 // app.use("/google", googlerouter);
 // app.use("/facebook", fbrouter);
 app.use("/details", detailUserRoute);
+app.use("/messages", messageRouter);
 
-server.listen(process.env.port, async () => {
+const PORT = process.env.port || process.env.PORT || 8080;
+server.listen(PORT, async () => {
   try {
     await connection;
-    console.log(`connected to port at ${process.env.port}`);
+    console.log(`connected to port at ${PORT}`);
   } catch (error) {
     console.log(error);
   }
