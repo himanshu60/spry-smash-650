@@ -8,32 +8,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style/theme.css" />
     <link rel="stylesheet" href="./style/adminPage.css">
     <script src="https://kit.fontawesome.com/e962f2728f.js" crossorigin="anonymous"></script>
-    <title>DASHBOARD</title>
+    <title>User Info · HangOut</title>
     <style>
-        #menu .items li:nth-child(1) {
-            border-left: 4px solid white;
-        }
-
-
-        body {
-            background: #1d2630;
-        }
-
-        * {
-            color: #fff;
-        }
-
-        h1 {
-            color: crimson;
-            text-align: center;
-        }
-
-        #Update {
-            display: none;
-        }
+        #Update { display: none; }
     </style>
+    <script>
+        (function () { try { var t = localStorage.getItem('hangout-theme'); document.documentElement.setAttribute('data-theme', t || 'dark'); } catch (e) { } })();
+    </script>
 </head>
 
 <body>
