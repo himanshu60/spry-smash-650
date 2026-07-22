@@ -98,30 +98,32 @@
     })
 
     let tbody = document.getElementById("append");
+    var TOKEN = (JSON.parse(localStorage.getItem("LoggedUser") || "null") || {}).token;
+    var AUTH = TOKEN ? { "Authorization": "Bearer " + TOKEN } : {};
 
     async function update() {
 
-        let res = await fetch("/user/get")
+        let res = await fetch("/user/get", { headers: AUTH })
+        if (res.status === 401 || res.status === 403) {
+            alert("Admin access required. Please log in with an admin account.");
+            location.replace("./login.html");
+            return;
+        }
         let data = await res.json();
         display(data);
-        console.log(data);
         let alldeletebtn = document.querySelectorAll(".delete");
-        console.log(alldeletebtn);
         alldeletebtn.forEach((item) => {
 
             item.addEventListener("click", async () => {
-                console.log(item.classList[0]);
                 let res = await fetch(`/user/delete/${item.classList[0]}`, {
                     method: "DELETE",
-
+                    headers: AUTH,
                 })
                 if (res.ok) {
-                    let r = res.json();
-
                     alert("delete successfully");
                     window.location.reload();
-
-
+                } else if (res.status === 401 || res.status === 403) {
+                    alert("Admin access required to delete users.");
                 }
             })
         })

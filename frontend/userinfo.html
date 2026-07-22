@@ -92,13 +92,19 @@
     })();
 
     let tbody = document.getElementById("append");
+    var TOKEN = (JSON.parse(localStorage.getItem("LoggedUser") || "null") || {}).token;
+    var AUTH = TOKEN ? { "Authorization": "Bearer " + TOKEN } : {};
 
     async function update() {
 
-        let res = await fetch("/user/get")
+        let res = await fetch("/user/get", { headers: AUTH })
+        if (res.status === 401 || res.status === 403) {
+            alert("Admin access required. Please log in with an admin account.");
+            location.replace("./login.html");
+            return;
+        }
         let data = await res.json();
         display(data);
-        console.log(data);
     }
 
     update();

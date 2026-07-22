@@ -1,11 +1,16 @@
 const express = require("express");
 const { MessageModel } = require("../models/message.schema");
+const { verifyToken } = require("../middleware/verifyToken");
 
 const messageRouter = express.Router();
 
 // Conversation history between two users, oldest first.
-messageRouter.get("/:me/:peer", async (req, res) => {
+// Requires auth, and the caller may only read their own conversations.
+messageRouter.get("/:me/:peer", verifyToken, async (req, res) => {
   const { me, peer } = req.params;
+  if (String(req.userId) !== String(me)) {
+    return res.status(403).json({ err: "Forbidden" });
+  }
   try {
     const messages = await MessageModel.find({
       $or: [

@@ -4,9 +4,28 @@ const { redisclient } = require("../config/redis");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models/user.schema");
-const { authmiddleware } = require("../middleware/authenticate");
+const { verifyToken, requireAdmin } = require("../middleware/verifyToken");
 const path = require("path");
 const userRouter = express.Router();
+
+// Simple in-memory login rate limiter (per IP): guards against brute force.
+const loginAttempts = new Map();
+function rateLimitLogin(req, res, next) {
+  const ip = req.headers["x-forwarded-for"] || req.ip || "unknown";
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000;
+  const max = 20;
+  let rec = loginAttempts.get(ip);
+  if (!rec || now > rec.resetAt) {
+    rec = { count: 0, resetAt: now + windowMs };
+    loginAttempts.set(ip, rec);
+  }
+  rec.count++;
+  if (rec.count > max) {
+    return res.status(429).json({ err: "Too many attempts. Please try again later." });
+  }
+  next();
+}
 
 // Emails treated as admins (configurable via env). Defaults to the accounts
 // documented as admins in the original project.
@@ -24,6 +43,12 @@ userRouter.post("/signup", async (req, res, next) => {
   // console.log(name,email,password)
 
   try {
+    if (!name || !email || !password) {
+      return res.status(400).send({ msg: "Name, email and password are required" });
+    }
+    if (password.length < 6) {
+      return res.status(400).send({ msg: "Password must be at least 6 characters" });
+    }
     const userExist = await UserModel.findOne({ email });
     if (userExist) {
       return res.status(400).send({ msg: "user already exists" });
@@ -55,7 +80,7 @@ userRouter.post("/signup", async (req, res, next) => {
   }
 });
 
-userRouter.post("/login", async (req, res, next) => {
+userRouter.post("/login", rateLimitLogin, async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await UserModel.findOne({ email });
@@ -79,7 +104,12 @@ userRouter.post("/login", async (req, res, next) => {
         }
 
         await redisclient.SET(user.email, JSON.stringify({ token }));
-        res.cookie("email", `${user.email}`);
+        res.cookie("email", `${user.email}`, {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 24 * 60 * 60 * 1000,
+        });
         res.json({
           msg: "LogIn Sucessfully",
           token,
@@ -97,9 +127,8 @@ userRouter.post("/login", async (req, res, next) => {
   }
 });
 
-//get data
-userRouter.get("/get", async (req, res, next) => {
-  // const payload = req.body;
+//get data (admin only)
+userRouter.get("/get", verifyToken, requireAdmin, async (req, res, next) => {
   try {
     const user = await UserModel.find().select("-password")
     res.send(user)
@@ -108,8 +137,8 @@ userRouter.get("/get", async (req, res, next) => {
   }
 })
 
-//delete data
-userRouter.delete("/delete/:id", async (req, res) => {
+//delete data (admin only)
+userRouter.delete("/delete/:id", verifyToken, requireAdmin, async (req, res) => {
   const id = req.params.id;
   try {
     const deleteduser = await UserModel.findByIdAndRemove({ "_id": id });

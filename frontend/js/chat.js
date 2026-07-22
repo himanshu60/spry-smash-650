@@ -25,6 +25,21 @@
     return;
   }
 
+  var authToken = (loggedUser && loggedUser.token) || null;
+  function authHeaders() {
+    var h = { "Content-Type": "application/json" };
+    if (authToken) h["Authorization"] = "Bearer " + authToken;
+    return h;
+  }
+  var redirecting = false;
+  function handle401() {
+    if (redirecting) return;
+    redirecting = true;
+    try { UI.toast("Session expired — please log in again", { type: "error" }); } catch (e) {}
+    localStorage.removeItem("LoggedUser");
+    setTimeout(function () { location.href = "./login.html"; }, 900);
+  }
+
   /* -------- elements -------- */
   var $ = function (s) { return document.querySelector(s); };
   var app = $("#app");
@@ -152,7 +167,8 @@
   async function loadUsers() {
     showSkeletons();
     try {
-      var res = await fetch("/details/get", { headers: { "Content-Type": "application/json" } });
+      var res = await fetch("/details/get", { headers: authHeaders() });
+      if (res.status === 401) { handle401(); return; }
       if (!res.ok) throw new Error("Failed to load");
       var all = await res.json();
       users = all.filter(function (u) { return String(u._id) !== String(myId); });
@@ -219,7 +235,8 @@
   async function loadHistory(peerId) {
     if (loadedPeers.has(peerId)) return;
     try {
-      var res = await fetch("/messages/" + encodeURIComponent(myId) + "/" + encodeURIComponent(peerId));
+      var res = await fetch("/messages/" + encodeURIComponent(myId) + "/" + encodeURIComponent(peerId), { headers: authHeaders() });
+      if (res.status === 401) { handle401(); return; }
       if (!res.ok) return;
       var rows = await res.json();
       var fetched = rows.map(function (r) {

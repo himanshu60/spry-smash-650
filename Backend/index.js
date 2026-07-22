@@ -17,9 +17,21 @@ const app = express();
 
 
 
+// CORS: since the backend also serves the frontend (same-origin), CORS isn't
+// needed for normal use. Lock it to an allowlist when ALLOWED_ORIGINS is set;
+// otherwise reflect the request origin (with credentials support).
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+const corsOptions = {
+  origin: ALLOWED_ORIGINS.length ? ALLOWED_ORIGINS : true,
+  credentials: true,
+};
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "*" }));
+app.use(cors(corsOptions));
 
 // Serve the static frontend from the backend so the whole app runs as a single
 // same-origin service (no CORS/cookie issues, one deploy target).
@@ -46,7 +58,11 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: { origin: "*", methods: ["GET", "POST"] },
+  cors: {
+    origin: ALLOWED_ORIGINS.length ? ALLOWED_ORIGINS : true,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
 
